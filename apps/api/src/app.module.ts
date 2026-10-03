@@ -6,6 +6,7 @@ import { LoggerModule } from 'nestjs-pino';
 import { validateEnv } from './config/env.js';
 import { AuthModule } from './auth/auth.module.js';
 import { HealthModule } from './health/health.module.js';
+import { PlacesModule } from './places/places.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
 import { UsersModule } from './users/users.module.js';
 
@@ -27,6 +28,7 @@ const isProd = process.env.NODE_ENV === 'production';
     HealthModule,
     AuthModule,
     UsersModule,
+    PlacesModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })
