@@ -1,20 +1,36 @@
-import type { Place } from '@vibespot/shared';
+import { haversineMeters, type Place } from '@vibespot/shared';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, radius } from '@/theme';
 
-export function formatDistance(meters?: number): string {
-  if (meters === undefined) return '';
-  return meters < 1000 ? `${meters} m` : `${(meters / 1000).toFixed(1)} km`;
+export function formatDistance(meters: number): string {
+  if (meters < 1000) return `${Math.round(meters)} m`;
+  const km = meters / 1000;
+  return km < 10 ? `${km.toFixed(1)} km` : `${Math.round(km)} km`;
 }
 
-export function PlaceCard({ place, onPress }: { place: Place; onPress?: () => void }) {
+// Khoảng cách từ vị trí thật của người dùng tới quán (không phụ thuộc tâm bản đồ).
+export function distanceFrom(me: { lat: number; lng: number } | null, place: Place) {
+  return me ? haversineMeters(me, place) : undefined;
+}
+
+export function PlaceCard({
+  place,
+  distance,
+  onPress,
+}: {
+  place: Place;
+  distance?: number;
+  onPress?: () => void;
+}) {
   return (
     <Pressable onPress={onPress} style={styles.card}>
       <View style={styles.row}>
         <Text style={styles.name} numberOfLines={1}>
           {place.name}
         </Text>
-        <Text style={styles.distance}>{formatDistance(place.distanceMeters)}</Text>
+        {distance !== undefined ? (
+          <Text style={styles.distance}>{formatDistance(distance)}</Text>
+        ) : null}
       </View>
       <Text style={styles.address} numberOfLines={2}>
         {place.address}

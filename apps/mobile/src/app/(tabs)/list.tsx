@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
+import { useMemo } from 'react';
 import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { PlaceCard } from '@/components/place-card';
+import { PlaceCard, distanceFrom } from '@/components/place-card';
 import { useNearbyPlaces } from '@/features/places/queries';
 import { useMapStore } from '@/stores/map-store';
 import { colors } from '@/theme';
@@ -9,8 +10,17 @@ import { colors } from '@/theme';
 export default function ListScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { area, select } = useMapStore();
-  const { data: places = [], isLoading, isError, refetch, isRefetching } = useNearbyPlaces(area);
+  const { area, me, select } = useMapStore();
+  const { data = [], isLoading, isError, refetch, isRefetching } = useNearbyPlaces(area);
+
+  // Có vị trí thật thì xếp theo khoảng cách từ người dùng; chưa có thì giữ thứ tự từ tâm bản đồ.
+  const places = useMemo(() => {
+    if (!me) return data;
+    return data
+      .map((p) => ({ p, d: distanceFrom(me, p)! }))
+      .sort((a, b) => a.d - b.d)
+      .map((x) => x.p);
+  }, [data, me]);
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
@@ -24,6 +34,7 @@ export default function ListScreen() {
         renderItem={({ item }) => (
           <PlaceCard
             place={item}
+            distance={distanceFrom(me, item)}
             onPress={() => {
               select(item.id); // chọn rồi quay lại bản đồ để xem vị trí
               router.navigate('/');

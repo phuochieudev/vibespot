@@ -1,67 +1,45 @@
 import { Ionicons } from '@expo/vector-icons';
 import { useEffect, useMemo, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
-import MapView, { Marker, type Region } from 'react-native-maps';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
-import { DEFAULT_CENTER } from '@vibespot/shared';
-import { PlaceCard } from '@/components/place-card';
+import { DEFAULT_CENTER, isInServiceArea } from '@vibespot/shared';
+import { PlaceCard, distanceFrom } from '@/components/place-card';
+import { PlacesMap, type PlacesMapHandle } from '@/components/places-map';
 import { useNearbyPlaces } from '@/features/places/queries';
 import { useUserLocation } from '@/lib/use-user-location';
 import { useMapStore } from '@/stores/map-store';
 import { colors } from '@/theme';
 
-// 1 độ vĩ ~ 111 km. Bán kính tìm = nửa chiều cao vùng nhìn thấy, giới hạn 300m..5km.
-const radiusFromRegion = (r: Region) =>
-  Math.min(5000, Math.max(300, Math.round((r.latitudeDelta * 111_000) / 2)));
-
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
-  const mapRef = useRef<MapView>(null);
+  const mapRef = useRef<PlacesMapHandle>(null);
   const { coords, status } = useUserLocation();
-  const { area, setArea, selectedId, select } = useMapStore();
+  const { area, setArea, me, setMe, selectedId, select } = useMapStore();
+  const outsideArea = me !== null && !isInServiceArea(me.lat, me.lng);
   const { data: places = [], isFetching, isError } = useNearbyPlaces(area);
   const selected = useMemo(() => places.find((p) => p.id === selectedId), [places, selectedId]);
 
-  // Có vị trí thật thì bay tới đó và tìm quanh đó.
+  // Có vị trí thật: lưu lại để tính khoảng cách. Chỉ bay tới đó nếu đang ở trong TP.HCM,
+  // ngoài ra giữ bản đồ ở Quận 1 (API chỉ có dữ liệu TP.HCM).
   useEffect(() => {
     if (!coords) return;
-    mapRef.current?.animateToRegion(
-      { latitude: coords.lat, longitude: coords.lng, latitudeDelta: 0.012, longitudeDelta: 0.012 },
-      500,
-    );
+    setMe(coords);
+    if (!isInServiceArea(coords.lat, coords.lng)) return;
+    mapRef.current?.flyTo(coords.lat, coords.lng);
     setArea({ lat: coords.lat, lng: coords.lng, radius: 1200 });
-  }, [coords, setArea]);
+  }, [coords, setArea, setMe]);
 
   return (
     <View style={styles.container}>
-      <MapView
+      <PlacesMap
         ref={mapRef}
-        style={StyleSheet.absoluteFill}
-        initialRegion={{
-          latitude: DEFAULT_CENTER.lat,
-          longitude: DEFAULT_CENTER.lng,
-          latitudeDelta: 0.015,
-          longitudeDelta: 0.015,
-        }}
-        showsUserLocation={status === 'granted'}
-        showsMyLocationButton={false}
-        onPress={() => select(null)}
-        onRegionChangeComplete={(r) =>
-          setArea({ lat: r.latitude, lng: r.longitude, radius: radiusFromRegion(r) })
-        }
-      >
-        {places.map((p) => (
-          <Marker
-            key={p.id}
-            coordinate={{ latitude: p.lat, longitude: p.lng }}
-            pinColor={p.id === selectedId ? colors.primaryDark : colors.primary}
-            onPress={(e) => {
-              e.stopPropagation();
-              select(p.id);
-            }}
-          />
-        ))}
-      </MapView>
+        center={DEFAULT_CENTER}
+        places={places}
+        selectedId={selectedId}
+        me={me}
+        onSelect={select}
+        onMove={setArea}
+      />
 
       <View style={[styles.badge, { top: insets.top + 8 }]}>
         {isFetching ? <ActivityIndicator size="small" color={colors.primary} /> : null}
@@ -69,6 +47,13 @@ export default function MapScreen() {
           {isError ? 'Không kết nối được máy chủ' : `${places.length} quán quanh đây`}
         </Text>
       </View>
+
+      {outsideArea ? (
+        <View style={[styles.notice, { top: insets.top + 52 }]}>
+          <Ionicons name="location-outline" size={16} color={colors.muted} />
+          <Text style={styles.noticeText}>Bạn đang ngoài TP.HCM, hiển thị khu vực Quận 1.</Text>
+        </View>
+      ) : null}
 
       {status === 'denied' ? (
         <View style={[styles.notice, { top: insets.top + 52 }]}>
@@ -79,7 +64,7 @@ export default function MapScreen() {
 
       {selected ? (
         <View style={styles.sheet}>
-          <PlaceCard place={selected} />
+          <PlaceCard place={selected} distance={distanceFrom(me, selected)} />
         </View>
       ) : null}
 
