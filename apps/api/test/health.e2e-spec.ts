@@ -23,6 +23,11 @@ describe('Health (e2e)', () => {
     expect(res.body.status).toBe('ok');
   });
 
+  it('GET /api/health/db kết nối được Postgres có PostGIS', async () => {
+    const res = await request(app.getHttpServer()).get('/api/health/db').expect(200);
+    expect(res.body.postgis).toMatch(/^\d/);
+  });
+
   it('có header bảo mật của helmet', async () => {
     const res = await request(app.getHttpServer()).get('/api/health');
     expect(res.headers['x-content-type-options']).toBe('nosniff');

@@ -1,0 +1,190 @@
+generator client {
+  provider = "prisma-client"
+  output   = "../src/generated/prisma"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+enum UserRole {
+  USER
+  ADMIN
+}
+
+enum PlaceCategory {
+  CAFE
+  PARKING
+  EV_CHARGING
+}
+
+enum PlaceStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
+enum PlaceSource {
+  USER
+  OSM
+}
+
+enum ReportStatus {
+  OPEN
+  RESOLVED
+  DISMISSED
+}
+
+model User {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  email        String   @unique
+  passwordHash String
+  displayName  String
+  avatarUrl    String?
+  role         UserRole @default(USER)
+  reputation   Int      @default(0)
+  createdAt    DateTime @default(now())
+  updatedAt    DateTime @updatedAt
+
+  refreshTokens RefreshToken[]
+  places        Place[]
+  reviews       Review[]
+  photos        Photo[]
+  wifiTests     WifiTest[]
+  favorites     Favorite[]
+  reports       Report[]
+  editProposals EditProposal[]
+}
+
+// Lưu hash của refresh token để thu hồi / xoay vòng được.
+model RefreshToken {
+  id        String    @id @default(uuid(7)) @db.Uuid
+  userId    String    @db.Uuid
+  tokenHash String    @unique
+  expiresAt DateTime
+  revokedAt DateTime?
+  createdAt DateTime  @default(now())
+
+  user User @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId])
+}
+
+model Place {
+  id           String        @id @default(uuid(7)) @db.Uuid
+  name         String
+  // `name` đã bỏ dấu + chữ thường, dùng cho tìm kiếm không dấu (pg_trgm).
+  searchName   String
+  category     PlaceCategory
+  address      String
+  district     String?
+  // Điểm địa lý (PostGIS). Prisma chưa hỗ trợ kiểu này nên đọc/ghi bằng raw SQL.
+  location     Unsupported("geography(Point,4326)")
+  // Thuộc tính riêng theo loại, kiểm tra bằng Zod ở @vibespot/shared.
+  attributes   Json          @default("{}")
+  openingHours Json?
+  status       PlaceStatus   @default(PENDING)
+  source       PlaceSource   @default(USER)
+  osmId        String?       @unique
+  createdById  String?       @db.Uuid
+  avgRating    Float         @default(0)
+  reviewCount  Int           @default(0)
+  createdAt    DateTime      @default(now())
+  updatedAt    DateTime      @updatedAt
+
+  createdBy     User?          @relation(fields: [createdById], references: [id], onDelete: SetNull)
+  reviews       Review[]
+  photos        Photo[]
+  wifiTests     WifiTest[]
+  favorites     Favorite[]
+  reports       Report[]
+  editProposals EditProposal[]
+
+  @@index([location], type: Gist)
+  @@index([searchName(ops: raw("gin_trgm_ops"))], type: Gin)
+  @@index([category, status])
+}
+
+model Review {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  placeId   String   @db.Uuid
+  userId    String   @db.Uuid
+  rating    Int
+  comment   String?
+  createdAt DateTime @default(now())
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // Mỗi người chỉ đánh giá một lần cho mỗi địa điểm.
+  @@unique([placeId, userId])
+  @@index([placeId, createdAt])
+}
+
+model Photo {
+  id        String   @id @default(uuid(7)) @db.Uuid
+  placeId   String   @db.Uuid
+  userId    String   @db.Uuid
+  url       String
+  publicId  String
+  createdAt DateTime @default(now())
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([placeId])
+}
+
+model WifiTest {
+  id           String   @id @default(uuid(7)) @db.Uuid
+  placeId      String   @db.Uuid
+  userId       String   @db.Uuid
+  downloadMbps Float
+  uploadMbps   Float
+  pingMs       Float
+  createdAt    DateTime @default(now())
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([placeId, createdAt])
+}
+
+model Favorite {
+  userId    String   @db.Uuid
+  placeId   String   @db.Uuid
+  createdAt DateTime @default(now())
+
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+
+  @@id([userId, placeId])
+}
+
+model Report {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  placeId   String       @db.Uuid
+  userId    String       @db.Uuid
+  reason    String
+  status    ReportStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}
+
+model EditProposal {
+  id        String       @id @default(uuid(7)) @db.Uuid
+  placeId   String       @db.Uuid
+  userId    String       @db.Uuid
+  changes   Json
+  status    ReportStatus @default(OPEN)
+  createdAt DateTime     @default(now())
+
+  place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
+  user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([status])
+}

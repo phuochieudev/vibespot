@@ -5,6 +5,7 @@ import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { validateEnv } from './config/env.js';
 import { HealthModule } from './health/health.module.js';
+import { PrismaModule } from './prisma/prisma.module.js';
 
 const isProd = process.env.NODE_ENV === 'production';
 
@@ -20,6 +21,7 @@ const isProd = process.env.NODE_ENV === 'production';
     }),
     // 100 request / phút / IP
     ThrottlerModule.forRoot([{ ttl: 60_000, limit: 100 }]),
+    PrismaModule,
     HealthModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],

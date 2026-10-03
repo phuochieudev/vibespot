@@ -8,3 +8,7 @@ dist
 *.log
 .DS_Store
 coverage
+
+# Prisma client sinh tự động (pnpm install -> prisma generate)
+apps/api/src/generated
+*.tsbuildinfo
