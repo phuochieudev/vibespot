@@ -2,14 +2,18 @@
   "name": "vibespot",
   "private": true,
   "packageManager": "pnpm@10.15.0",
-  "engines": { "node": ">=20" },
+  "engines": {
+    "node": ">=20"
+  },
   "scripts": {
     "build": "turbo run build",
     "dev": "turbo run dev",
     "lint": "turbo run lint",
     "typecheck": "turbo run typecheck",
     "test": "turbo run test",
-    "format": "prettier --write ."
+    "format": "prettier --write .",
+    "dev:api": "pnpm --filter @vibespot/api start:dev",
+    "dev:mobile": "pnpm --filter @vibespot/mobile start"
   },
   "devDependencies": {
     "prettier": "^3.3.3",
