@@ -6,6 +6,7 @@ import { ConnectorType, NoiseLevel, OutletLevel, VehicleType } from './enums';
 
 export const cafeAttributesSchema = z.object({
   outlets: OutletLevel.optional(),
+  hasWifi: z.boolean().optional(),
   wifiMbps: z.number().min(0).max(10_000).optional(),
   noise: NoiseLevel.optional(),
   airConditioned: z.boolean().optional(),

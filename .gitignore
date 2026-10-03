@@ -12,3 +12,6 @@ coverage
 # Prisma client sinh tự động (pnpm install -> prisma generate)
 apps/api/src/generated
 *.tsbuildinfo
+
+# Cache dữ liệu OSM tải về
+apps/api/prisma/seed/.cache
