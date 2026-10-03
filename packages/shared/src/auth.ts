@@ -33,3 +33,12 @@ export const authResponseSchema = z.object({
   refreshToken: z.string(),
 });
 export type AuthResponse = z.infer<typeof authResponseSchema>;
+
+export const updateProfileSchema = z
+  .object({
+    displayName: z.string().trim().min(2).max(50),
+    avatarUrl: z.url().nullable(),
+  })
+  .partial()
+  .refine((v) => Object.keys(v).length > 0, { message: 'Cần ít nhất một trường để cập nhật' });
+export type UpdateProfileInput = z.infer<typeof updateProfileSchema>;

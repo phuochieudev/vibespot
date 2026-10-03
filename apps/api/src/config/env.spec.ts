@@ -1,6 +1,9 @@
 import { validateEnv } from './env.js';
 
-const base = { DATABASE_URL: 'postgresql://u:p@localhost/db' };
+const base = {
+  DATABASE_URL: 'postgresql://u:p@localhost/db',
+  JWT_ACCESS_SECRET: 'x'.repeat(32),
+};
 
 describe('validateEnv', () => {
   it('đặt giá trị mặc định', () => {

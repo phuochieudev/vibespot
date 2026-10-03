@@ -10,7 +10,7 @@ App tìm địa điểm theo nhu cầu ở TP.HCM: quán cà phê làm việc, b
 - [x] Bước 2: Package `shared` (Zod schemas)
 - [x] Bước 3: Khung NestJS API
 - [x] Bước 4: Database (Neon + PostGIS + Prisma)
-- [ ] Bước 5: Auth
+- [x] Bước 5: Auth
 - [ ] Bước 6: Places API (`nearby`, `search`, tạo mới)
 - [ ] Bước 7: Import dữ liệu OSM
 - [ ] Bước 8: Khung Expo app + bản đồ
