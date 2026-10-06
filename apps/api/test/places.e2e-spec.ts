@@ -119,6 +119,32 @@ describe('Places (e2e)', () => {
       expect(res.body.find((p: { id: string }) => p.id === placeId)).toBeUndefined();
     });
 
+    it('lọc hasWifi: quán chưa ghi thông tin wifi thì bị loại, có ghi thì hiện', async () => {
+      const url = '/api/places/nearby?lat=10.7769&lng=106.7009&radius=500&hasWifi=true';
+      const found = (body: { id: string }[]) => body.find((p) => p.id === placeId);
+
+      let res = await http().get(url).expect(200);
+      expect(found(res.body)).toBeUndefined();
+
+      await prisma.$executeRaw`
+        UPDATE "Place" SET attributes = attributes || '{"hasWifi": true}'::jsonb
+        WHERE id = ${placeId}::uuid`;
+
+      res = await http().get(url).expect(200);
+      expect(found(res.body)).toBeDefined();
+    });
+
+    it('lọc airConditioned: quán không khớp thì bị loại', async () => {
+      const res = await http()
+        .get('/api/places/nearby?lat=10.7769&lng=106.7009&radius=500&airConditioned=true')
+        .expect(200);
+      expect(res.body.find((p: { id: string }) => p.id === placeId)).toBeUndefined();
+    });
+
+    it('bộ lọc không hợp lệ trả 400', async () => {
+      await http().get('/api/places/nearby?lat=10&lng=106&hasWifi=abc').expect(400);
+    });
+
     it('nearby kiểm tra tham số (400)', async () => {
       await http().get('/api/places/nearby?lat=abc&lng=106').expect(400);
       await http().get('/api/places/nearby?lat=10&lng=106&radius=999999').expect(400);

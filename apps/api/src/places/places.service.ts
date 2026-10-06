@@ -36,12 +36,27 @@ export class PlacesService {
 
   async nearby(q: NearbyQuery): Promise<Place[]> {
     const here = point(q.lat, q.lng);
+
+    // Gom các bộ lọc người dùng đã bật, bỏ những cái không gửi (undefined).
+    const wanted = Object.fromEntries(
+      Object.entries({ hasWifi: q.hasWifi, airConditioned: q.airConditioned }).filter(
+        ([, value]) => value !== undefined,
+      ),
+    );
+    // `attributes @> '{"hasWifi":true}'` = attributes chứa cặp khoá/giá trị đó.
+    // Giá trị vẫn đi qua tham số của Prisma nên không bị SQL injection.
+    const attrFilter =
+      Object.keys(wanted).length > 0
+        ? Prisma.sql`AND attributes @> ${JSON.stringify(wanted)}::jsonb`
+        : Prisma.empty;
+
     const rows = await this.prisma.$queryRaw<PlaceRow[]>`
       SELECT ${COLUMNS}, ST_Distance(location, ${here}) AS "distanceMeters"
       FROM "Place"
       WHERE status = 'APPROVED'
         AND category = ${q.category}::"PlaceCategory"
         AND ST_DWithin(location, ${here}, ${q.radius}::float8)
+        ${attrFilter}
       ORDER BY "distanceMeters"
       LIMIT ${q.limit}`;
     return rows.map(toPlace);

@@ -43,12 +43,15 @@ export const placeSchema = z.object({
 });
 export type Place = z.infer<typeof placeSchema>;
 
+const queryBoolean = z.enum(['true', 'false']).transform((v) => v === 'true');
 export const nearbyQuerySchema = z.object({
   lat: z.coerce.number().pipe(latSchema),
   lng: z.coerce.number().pipe(lngSchema),
   radius: z.coerce.number().int().min(100).max(20_000).default(2000),
   category: PlaceCategory.default('CAFE'),
   limit: z.coerce.number().int().min(1).max(100).default(50),
+  hasWifi: queryBoolean.optional(),
+  airConditioned: queryBoolean.optional(),
 });
 export type NearbyQuery = z.infer<typeof nearbyQuerySchema>;
 

@@ -3,6 +3,7 @@ import { useEffect, useMemo, useRef } from 'react';
 import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DEFAULT_CENTER, isInServiceArea } from '@vibespot/shared';
+import { FilterBar } from '@/components/filter-bar';
 import { PlaceCard, distanceFrom } from '@/components/place-card';
 import { PlacesMap, type PlacesMapHandle } from '@/components/places-map';
 import { useNearbyPlaces } from '@/features/places/queries';
@@ -14,9 +15,9 @@ export default function MapScreen() {
   const insets = useSafeAreaInsets();
   const mapRef = useRef<PlacesMapHandle>(null);
   const { coords, status } = useUserLocation();
-  const { area, setArea, me, setMe, selectedId, select } = useMapStore();
+  const { area, filters, setArea, me, setMe, selectedId, select } = useMapStore();
   const outsideArea = me !== null && !isInServiceArea(me.lat, me.lng);
-  const { data: places = [], isFetching, isError } = useNearbyPlaces(area);
+  const { data: places = [], isFetching, isError } = useNearbyPlaces(area, filters);
   const selected = useMemo(() => places.find((p) => p.id === selectedId), [places, selectedId]);
 
   // Có vị trí thật: lưu lại để tính khoảng cách. Chỉ bay tới đó nếu đang ở trong TP.HCM,
@@ -48,15 +49,19 @@ export default function MapScreen() {
         </Text>
       </View>
 
+      <View style={[styles.filters, { top: insets.top + 52 }]}>
+        <FilterBar />
+      </View>
+
       {outsideArea ? (
-        <View style={[styles.notice, { top: insets.top + 52 }]}>
+        <View style={[styles.notice, { top: insets.top + 104 }]}>
           <Ionicons name="location-outline" size={16} color={colors.muted} />
           <Text style={styles.noticeText}>Bạn đang ngoài TP.HCM, hiển thị khu vực Quận 1.</Text>
         </View>
       ) : null}
 
       {status === 'denied' ? (
-        <View style={[styles.notice, { top: insets.top + 52 }]}>
+        <View style={[styles.notice, { top: insets.top + 104 }]}>
           <Ionicons name="location-outline" size={16} color={colors.muted} />
           <Text style={styles.noticeText}>Chưa có quyền vị trí, đang hiển thị khu vực Quận 1.</Text>
         </View>
@@ -94,6 +99,7 @@ const styles = StyleSheet.create({
     elevation: 4,
   },
   badgeText: { fontSize: 13, fontWeight: '600', color: colors.text },
+  filters: { position: 'absolute', left: 0, right: 0, alignItems: 'center' },
   notice: {
     position: 'absolute',
     alignSelf: 'center',

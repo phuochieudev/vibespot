@@ -33,6 +33,26 @@ describe('nearbyQuerySchema', () => {
     const r = nearbyQuerySchema.parse({ lat: '10.77', lng: '106.7' });
     expect(r).toMatchObject({ lat: 10.77, lng: 106.7, radius: 2000, category: 'CAFE' });
   });
+
+  it('không gửi bộ lọc thì là undefined', () => {
+    const r = nearbyQuerySchema.parse({ lat: '10.77', lng: '106.7' });
+    expect(r.hasWifi).toBeUndefined();
+    expect(r.airConditioned).toBeUndefined();
+  });
+
+  it('"true" thành true', () => {
+    expect(nearbyQuerySchema.parse({ lat: '10', lng: '106', hasWifi: 'true' }).hasWifi).toBe(true);
+  });
+
+  it('"false" thành false (không bị coerce thành true)', () => {
+    const r = nearbyQuerySchema.parse({ lat: '10', lng: '106', airConditioned: 'false' });
+    expect(r.airConditioned).toBe(false);
+  });
+
+  it('từ chối giá trị lạ', () => {
+    const r = nearbyQuerySchema.safeParse({ lat: '10', lng: '106', hasWifi: 'abc' });
+    expect(r.success).toBe(false);
+  });
 });
 
 describe('registerSchema', () => {
