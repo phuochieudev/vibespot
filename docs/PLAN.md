@@ -14,7 +14,7 @@ App tìm địa điểm theo nhu cầu ở TP.HCM: quán cà phê làm việc, b
 - [x] Bước 6: Places API (`nearby`, `search`, tạo mới)
 - [x] Bước 7: Import dữ liệu OSM
 - [x] Bước 8: Khung Expo app + bản đồ
-- [ ] Bước 9: Lọc, chi tiết, đánh giá, ảnh
+
 - [ ] Bước 10: CI, Dockerfile, deploy
 
 ## Kiến trúc

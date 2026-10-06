@@ -23,12 +23,14 @@ export function useNearbyPlaces(area: Area, filters: Filters) {
     queryKey: ['places', 'nearby', key, filters],
     queryFn: () =>
       api<Place[]>('/places/nearby', {
-        ...key,
-        category: 'CAFE',
-        limit: 100,
-        // Chỉ gửi khi bật; tắt thì bỏ hẳn tham số (nghĩa là "không lọc", khác với "false").
-        hasWifi: filters.hasWifi ? 'true' : undefined,
-        airConditioned: filters.airConditioned ? 'true' : undefined,
+        params: {
+          ...key,
+          category: 'CAFE',
+          limit: 100,
+          // Chỉ gửi khi bật; tắt thì bỏ hẳn tham số (nghĩa là "không lọc", khác với "false").
+          hasWifi: filters.hasWifi ? 'true' : undefined,
+          airConditioned: filters.airConditioned ? 'true' : undefined,
+        },
       }),
     placeholderData: keepPreviousData,
   });

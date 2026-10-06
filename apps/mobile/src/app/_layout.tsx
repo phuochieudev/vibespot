@@ -1,14 +1,24 @@
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { Stack } from 'expo-router';
 import { StatusBar } from 'expo-status-bar';
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
+import { useAuth } from '@/stores/auth-store';
 
 export default function RootLayout() {
   const [client] = useState(() => new QueryClient({ defaultOptions: { queries: { retry: 1 } } }));
+
+  // Khôi phục phiên đăng nhập từ refresh token đã lưu (nếu có).
+  useEffect(() => {
+    void useAuth.getState().init();
+  }, []);
+
   return (
     <QueryClientProvider client={client}>
       <StatusBar style="dark" />
-      <Stack screenOptions={{ headerShown: false }} />
+      <Stack screenOptions={{ headerShown: false }}>
+        <Stack.Screen name="login" options={{ presentation: 'modal' }} />
+        <Stack.Screen name="register" options={{ presentation: 'modal' }} />
+      </Stack>
     </QueryClientProvider>
   );
 }

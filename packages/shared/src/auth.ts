@@ -2,15 +2,19 @@ import { z } from 'zod';
 import { UserRole } from './enums';
 
 export const registerSchema = z.object({
-  email: z.email().toLowerCase(),
-  password: z.string().min(8).max(72),
-  displayName: z.string().trim().min(2).max(50),
+  email: z.email('Email không hợp lệ').toLowerCase(),
+  password: z.string().min(8, 'Mật khẩu tối thiểu 8 ký tự').max(72, 'Mật khẩu tối đa 72 ký tự'),
+  displayName: z
+    .string()
+    .trim()
+    .min(2, 'Tên hiển thị tối thiểu 2 ký tự')
+    .max(50, 'Tên hiển thị tối đa 50 ký tự'),
 });
 export type RegisterInput = z.infer<typeof registerSchema>;
 
 export const loginSchema = z.object({
-  email: z.email().toLowerCase(),
-  password: z.string().min(1).max(72),
+  email: z.email('Email không hợp lệ').toLowerCase(),
+  password: z.string().min(1, 'Vui lòng nhập mật khẩu').max(72, 'Mật khẩu tối đa 72 ký tự'),
 });
 export type LoginInput = z.infer<typeof loginSchema>;
 

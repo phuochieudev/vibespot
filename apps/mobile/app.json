@@ -36,7 +36,8 @@
         {
           "locationWhenInUsePermission": "Vibespot dùng vị trí của bạn để tìm quán cà phê gần đây."
         }
-      ]
+      ],
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
