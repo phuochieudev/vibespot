@@ -7,8 +7,8 @@ export const latSchema = z.number().min(-90).max(90);
 export const lngSchema = z.number().min(-180).max(180);
 
 const placeBase = {
-  name: z.string().trim().min(2).max(120),
-  address: z.string().trim().min(3).max(240),
+  name: z.string().trim().min(2, 'Tên quán tối thiểu 2 ký tự').max(120, 'Tên quán tối đa 120 ký tự'),
+  address: z.string().trim().min(3, 'Vui lòng nhập địa chỉ').max(240, 'Địa chỉ tối đa 240 ký tự'),
   district: z.string().trim().max(80).optional(),
   lat: latSchema,
   lng: lngSchema,
@@ -35,6 +35,8 @@ export const placeSchema = z.object({
   lat: latSchema,
   lng: lngSchema,
   attributes: z.record(z.string(), z.unknown()),
+  // Giờ mở cửa dạng chuỗi gốc của OSM (vd. "Mo-Su 07:00-22:00"); null nếu chưa có.
+  openingHours: z.object({ raw: z.string() }).nullable(),
   status: PlaceStatus,
   source: PlaceSource,
   avgRating: z.number().min(0).max(5),

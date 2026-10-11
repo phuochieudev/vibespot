@@ -11,7 +11,7 @@ import { colors } from '@/theme';
 export default function ListScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
-  const { area, filters, me, select } = useMapStore();
+  const { area, filters, me } = useMapStore();
   const filtering = filters.hasWifi || filters.airConditioned;
   const { data = [], isLoading, isError, refetch, isRefetching } = useNearbyPlaces(area, filters);
 
@@ -40,10 +40,7 @@ export default function ListScreen() {
           <PlaceCard
             place={item}
             distance={distanceFrom(me, item)}
-            onPress={() => {
-              select(item.id); // chọn rồi quay lại bản đồ để xem vị trí
-              router.navigate('/');
-            }}
+            onPress={() => router.push({ pathname: '/place/[id]', params: { id: item.id } })}
           />
         )}
         ListEmptyComponent={

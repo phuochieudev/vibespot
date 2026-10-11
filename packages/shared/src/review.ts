@@ -12,3 +12,12 @@ export const createWifiTestSchema = z.object({
   pingMs: z.number().min(0).max(10_000),
 });
 export type CreateWifiTestInput = z.infer<typeof createWifiTestSchema>;
+
+export const reviewSchema = z.object({
+  id: z.string(),
+  rating: z.number().int().min(1).max(5),
+  comment: z.string().nullable(),
+  createdAt: z.string(),
+  user: z.object({ id: z.string(), displayName: z.string(), avatarUrl: z.string().nullable() }),
+});
+export type Review = z.infer<typeof reviewSchema>;

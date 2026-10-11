@@ -1,6 +1,7 @@
 import { Ionicons } from '@expo/vector-icons';
+import { useRouter } from 'expo-router';
 import { useEffect, useMemo, useRef } from 'react';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { DEFAULT_CENTER, isInServiceArea } from '@vibespot/shared';
 import { FilterBar } from '@/components/filter-bar';
@@ -8,14 +9,17 @@ import { PlaceCard, distanceFrom } from '@/components/place-card';
 import { PlacesMap, type PlacesMapHandle } from '@/components/places-map';
 import { useNearbyPlaces } from '@/features/places/queries';
 import { useUserLocation } from '@/lib/use-user-location';
+import { useAuth } from '@/stores/auth-store';
 import { useMapStore } from '@/stores/map-store';
 import { colors } from '@/theme';
 
 export default function MapScreen() {
   const insets = useSafeAreaInsets();
+  const router = useRouter();
   const mapRef = useRef<PlacesMapHandle>(null);
   const { coords, status } = useUserLocation();
   const { area, filters, setArea, me, setMe, selectedId, select } = useMapStore();
+  const signedIn = useAuth((s) => s.user !== null);
   const outsideArea = me !== null && !isInServiceArea(me.lat, me.lng);
   const { data: places = [], isFetching, isError } = useNearbyPlaces(area, filters);
   const selected = useMemo(() => places.find((p) => p.id === selectedId), [places, selectedId]);
@@ -69,9 +73,21 @@ export default function MapScreen() {
 
       {selected ? (
         <View style={styles.sheet}>
-          <PlaceCard place={selected} distance={distanceFrom(me, selected)} />
+          <PlaceCard
+            place={selected}
+            distance={distanceFrom(me, selected)}
+            onPress={() => router.push({ pathname: '/place/[id]', params: { id: selected.id } })}
+          />
         </View>
       ) : null}
+
+      <Pressable
+        accessibilityLabel="Thêm quán"
+        onPress={() => router.push(signedIn ? '/add-place' : '/login')}
+        style={[styles.fab, { bottom: selected ? 118 : 24 }]}
+      >
+        <Ionicons name="add" size={30} color="#fff" />
+      </Pressable>
 
       <Text style={[styles.attribution, { bottom: selected ? 110 : 8 }]}>
         © OpenStreetMap contributors
@@ -112,6 +128,21 @@ const styles = StyleSheet.create({
     borderRadius: 999,
   },
   noticeText: { fontSize: 12, color: colors.muted },
+  fab: {
+    position: 'absolute',
+    right: 16,
+    width: 56,
+    height: 56,
+    borderRadius: 28,
+    backgroundColor: colors.primary,
+    alignItems: 'center',
+    justifyContent: 'center',
+    shadowColor: '#000',
+    shadowOpacity: 0.25,
+    shadowRadius: 6,
+    shadowOffset: { width: 0, height: 3 },
+    elevation: 6,
+  },
   sheet: { position: 'absolute', left: 12, right: 12, bottom: 12 },
   attribution: {
     position: 'absolute',

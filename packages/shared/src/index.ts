@@ -5,3 +5,4 @@ export * from './auth';
 export * from './review';
 export * from './search';
 export * from './geo';
+export * from './photo';

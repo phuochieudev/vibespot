@@ -14,7 +14,7 @@ import { PrismaService } from '../prisma/prisma.service.js';
 
 // Cột trả về cho client. `location` là kiểu geography nên phải tách ra lat/lng bằng PostGIS.
 const COLUMNS = Prisma.sql`
-  id, name, category, address, district, attributes, status, source,
+  id, name, category, address, district, attributes, "openingHours", status, source,
   "avgRating", "reviewCount",
   ST_Y(location::geometry) AS lat, ST_X(location::geometry) AS lng`;
 
@@ -78,6 +78,16 @@ export class PlacesService {
         AND ("searchName" ILIKE ${like} OR "searchName" % ${text})
       ORDER BY similarity("searchName", ${text}) DESC, "distanceMeters" ASC NULLS LAST
       LIMIT ${q.limit}`;
+    return rows.map(toPlace);
+  }
+
+  // Quán do chính người dùng đóng góp, mọi trạng thái (kể cả đang chờ duyệt).
+  async findMine(userId: string): Promise<Place[]> {
+    const rows = await this.prisma.$queryRaw<PlaceRow[]>`
+      SELECT ${COLUMNS} FROM "Place"
+      WHERE "createdById" = ${userId}::uuid
+      ORDER BY "createdAt" DESC
+      LIMIT 100`;
     return rows.map(toPlace);
   }
 

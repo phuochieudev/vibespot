@@ -1,7 +1,8 @@
 import { useRouter } from 'expo-router';
-import { ActivityIndicator, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/button';
+import { useMyPlaces } from '@/features/places/queries';
 import { useAuth } from '@/stores/auth-store';
 import { colors, radius } from '@/theme';
 
@@ -9,9 +10,13 @@ export default function ProfileScreen() {
   const insets = useSafeAreaInsets();
   const router = useRouter();
   const { status, user, logout } = useAuth();
+  const { data: mine = [] } = useMyPlaces(user !== null);
 
   return (
-    <View style={[styles.container, { paddingTop: insets.top + 12 }]}>
+    <ScrollView
+      style={styles.scroll}
+      contentContainerStyle={[styles.container, { paddingTop: insets.top + 12 }]}
+    >
       <Text style={styles.title}>Tôi</Text>
 
       {status === 'loading' ? (
@@ -38,12 +43,57 @@ export default function ProfileScreen() {
           </View>
         </View>
       )}
-    </View>
+
+      {user ? (
+        <View style={styles.contrib}>
+          <Text style={styles.section}>Đóng góp của tôi</Text>
+          {mine.length === 0 ? (
+            <Text style={styles.email}>Bạn chưa thêm quán nào. Bấm nút + trên bản đồ để thêm.</Text>
+          ) : (
+            mine.map((p) => (
+              <Pressable
+                key={p.id}
+                disabled={p.status !== 'APPROVED'}
+                onPress={() => router.push({ pathname: '/place/[id]', params: { id: p.id } })}
+                style={styles.row}
+              >
+                <Text style={styles.rowName} numberOfLines={1}>
+                  {p.name}
+                </Text>
+                <Text style={[styles.badge, STATUS[p.status].style]}>{STATUS[p.status].label}</Text>
+              </Pressable>
+            ))
+          )}
+        </View>
+      ) : null}
+    </ScrollView>
   );
 }
 
+const STATUS = {
+  PENDING: { label: 'Chờ duyệt', style: { backgroundColor: '#FEF3C7', color: '#92400E' } },
+  APPROVED: { label: 'Đã duyệt', style: { backgroundColor: '#DCFCE7', color: '#166534' } },
+  REJECTED: { label: 'Bị từ chối', style: { backgroundColor: '#FEE2E2', color: '#991B1B' } },
+} as const;
+
 const styles = StyleSheet.create({
-  container: { flex: 1, backgroundColor: colors.surface, paddingHorizontal: 16 },
+  scroll: { flex: 1, backgroundColor: colors.surface },
+  container: { paddingHorizontal: 16, paddingBottom: 32 },
+  contrib: { marginTop: 20, gap: 8 },
+  section: { fontSize: 16, fontWeight: '800', color: colors.text },
+  row: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-between',
+    gap: 8,
+    backgroundColor: colors.bg,
+    padding: 12,
+    borderRadius: radius.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+  },
+  rowName: { flex: 1, fontSize: 15, fontWeight: '600', color: colors.text },
+  badge: { fontSize: 12, fontWeight: '700', paddingHorizontal: 10, paddingVertical: 4, borderRadius: 999, overflow: 'hidden' },
   title: { fontSize: 24, fontWeight: '800', color: colors.text, paddingVertical: 12 },
   center: { marginTop: 40 },
   card: {

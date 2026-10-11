@@ -13,6 +13,7 @@ describe('Places (e2e)', () => {
   // Tên duy nhất để test không lẫn với dữ liệu thật (sau này có dữ liệu OSM).
   const token = `zq${Date.now().toString(36)}`;
   const email = `e2e-places-${Date.now()}@vibespot.test`;
+  const otherEmail = `e2e-places-other-${Date.now()}@vibespot.test`;
   const place = {
     name: `Cà Phê ${token}`,
     address: '26 Lý Tự Trọng, Quận 1',
@@ -42,7 +43,7 @@ describe('Places (e2e)', () => {
   afterAll(async () => {
     // Place.createdById là SetNull (xoá user không xoá địa điểm), nên phải xoá địa điểm riêng.
     await prisma.$executeRaw`DELETE FROM "Place" WHERE "searchName" LIKE ${`%${token}%`}`;
-    await prisma.user.deleteMany({ where: { email } });
+    await prisma.user.deleteMany({ where: { email: { in: [email, otherEmail] } } });
     await app.close();
   });
 
@@ -77,6 +78,22 @@ describe('Places (e2e)', () => {
       lng: place.lng,
       attributes: place.attributes,
     });
+  });
+
+  it('GET /me/places liệt kê quán của mình (cả chờ duyệt), người khác không thấy', async () => {
+    await http().get('/api/me/places').expect(401);
+    const mine = await http().get('/api/me/places').set(auth()).expect(200);
+    const hit = mine.body.find((p: { id: string }) => p.id === placeId);
+    expect(hit).toMatchObject({ name: place.name, status: 'PENDING' });
+
+    const other = await http()
+      .post('/api/auth/register')
+      .send({ email: otherEmail, password: 'matkhau-manh-123', displayName: 'Người khác' });
+    const theirs = await http()
+      .get('/api/me/places')
+      .set({ Authorization: `Bearer ${other.body.accessToken}` })
+      .expect(200);
+    expect(theirs.body).toEqual([]);
   });
 
   it('chặn tạo trùng (cùng tên, cách nhau < 50m) bằng 409', async () => {

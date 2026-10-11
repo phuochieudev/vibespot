@@ -7,7 +7,10 @@ import { validateEnv } from './config/env.js';
 import { AuthModule } from './auth/auth.module.js';
 import { HealthModule } from './health/health.module.js';
 import { PlacesModule } from './places/places.module.js';
+import { PhotosModule } from './photos/photos.module.js';
 import { PrismaModule } from './prisma/prisma.module.js';
+import { ReviewsModule } from './reviews/reviews.module.js';
+import { UploadsModule } from './uploads/uploads.module.js';
 import { UsersModule } from './users/users.module.js';
 
 const isProd = process.env.NODE_ENV === 'production';
@@ -29,6 +32,9 @@ const isProd = process.env.NODE_ENV === 'production';
     AuthModule,
     UsersModule,
     PlacesModule,
+    ReviewsModule,
+    UploadsModule,
+    PhotosModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

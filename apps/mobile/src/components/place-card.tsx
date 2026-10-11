@@ -35,6 +35,11 @@ export function PlaceCard({
       <Text style={styles.address} numberOfLines={2}>
         {place.address}
       </Text>
+      {place.reviewCount > 0 ? (
+        <Text style={styles.rating}>
+          ★ {place.avgRating.toFixed(1)} ({place.reviewCount})
+        </Text>
+      ) : null}
     </Pressable>
   );
 }
@@ -52,4 +57,5 @@ const styles = StyleSheet.create({
   name: { flex: 1, fontSize: 16, fontWeight: '700', color: colors.text },
   distance: { fontSize: 13, fontWeight: '600', color: colors.primary },
   address: { fontSize: 13, color: colors.muted },
+  rating: { fontSize: 13, fontWeight: '600', color: '#B45309' },
 });
