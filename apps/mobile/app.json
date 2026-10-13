@@ -19,7 +19,11 @@
         "monochromeImage": "./assets/images/android-icon-monochrome.png"
       },
       "predictiveBackGestureEnabled": false,
-      "package": "com.hieutran.vibespot"
+      "package": "com.hieutran.vibespot",
+      "permissions": [
+        "android.permission.ACCESS_COARSE_LOCATION",
+        "android.permission.ACCESS_FINE_LOCATION"
+      ]
     },
     "plugins": [
       "expo-router",
@@ -43,6 +47,16 @@
       "typedRoutes": true,
       "reactCompiler": true
     },
-    "platforms": ["ios", "android"]
+    "platforms": [
+      "ios",
+      "android"
+    ],
+    "extra": {
+      "router": {},
+      "eas": {
+        "projectId": "c405fb87-2c3d-4eae-a1b4-a7af61ea3b0d"
+      }
+    },
+    "owner": "phuochieudev"
   }
 }
