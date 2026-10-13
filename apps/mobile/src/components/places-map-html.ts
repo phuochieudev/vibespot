@@ -5,18 +5,16 @@ export const MAP_HTML = `<!doctype html>
 <html><head>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>html,body,#map{height:100%;margin:0;background:#eef1f0}</style>
+<style>html,body,#map{height:100%;margin:0;background:#eef1f0}
+.leaflet-tile-pane{filter:grayscale(.65) saturate(.75) brightness(1.07) contrast(.9)}</style>
 </head><body><div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 var post = function (m) { window.ReactNativeWebView.postMessage(JSON.stringify(m)); };
 var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([10.7769, 106.7009], 15);
-// Ô bản đồ nhạt (CARTO "Positron", dữ liệu OpenStreetMap) để ghim quán nổi bật hơn.
-// {r} tự chọn bản độ phân giải cao trên màn hình retina.
-L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
-  subdomains: 'abcd',
-  maxZoom: 20
-}).addTo(map);
+// Ô OpenStreetMap chuẩn (không cần khoá API). Làm nhạt bằng bộ lọc màu CSS ở .leaflet-tile-pane
+// để ghim quán nổi bật hơn. Ô công khai của OSM chỉ hợp để demo, xem docs/PLAN.md.
+L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
 
 var layer = L.layerGroup().addTo(map);
 var markers = {};

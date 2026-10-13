@@ -115,7 +115,7 @@ vibespot/
 
 CI mỗi PR: lint, typecheck, test. Merge vào `main`: Render tự deploy rồi chạy `prisma migrate deploy`. Tag `v*`: EAS build APK.
 
-**Bản đồ (đã quyết định ở bước 8):** Expo Go trên Android dùng khoá Google Maps tích hợp sẵn và bị Google từ chối (`Authorization failure`), nên `react-native-maps` cho bản đồ đen. Hiện dùng **Leaflet + ô bản đồ nhạt CARTO (dữ liệu OpenStreetMap) trong WebView** (`components/places-map.tsx`), không cần khoá hay thẻ thanh toán. Component giữ giao diện độc lập với engine, ở bước 10 có thể thay bằng **MapLibre native** (cần dev build qua EAS). Ô OSM công cộng chỉ hợp để demo; bản chính thức nên dùng nhà cung cấp ô riêng (MapTiler/Stadia, thay `tile.openstreetmap.org` trong `places-map-html.ts`).
+**Bản đồ (đã quyết định ở bước 8):** Expo Go trên Android dùng khoá Google Maps tích hợp sẵn và bị Google từ chối (`Authorization failure`), nên `react-native-maps` cho bản đồ đen. Hiện dùng **Leaflet + ô OpenStreetMap (làm nhạt bằng bộ lọc màu CSS) trong WebView** (`components/places-map.tsx`), không cần khoá hay thẻ thanh toán. Component giữ giao diện độc lập với engine, ở bước 10 có thể thay bằng **MapLibre native** (cần dev build qua EAS). Ô OSM công cộng chỉ hợp để demo; bản chính thức nên dùng nhà cung cấp ô riêng (MapTiler/Stadia, thay `tile.openstreetmap.org` trong `places-map-html.ts`).
 
 ## Mô tả trên CV
 

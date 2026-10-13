@@ -8,7 +8,7 @@ Xem kế hoạch chi tiết tại [docs/PLAN.md](docs/PLAN.md).
 
 ## Nguồn dữ liệu
 
-Bản đồ nền dùng ô CARTO "Positron" (© CARTO). Dữ liệu địa điểm ban đầu lấy từ **OpenStreetMap** (© OpenStreetMap contributors, giấy phép [ODbL](https://www.openstreetmap.org/copyright)), nạp bằng script `pnpm --filter @vibespot/api db:import-osm`. App hiển thị dòng ghi nguồn này ở màn hình thông tin.
+Dữ liệu địa điểm ban đầu và ô bản đồ nền lấy từ **OpenStreetMap** (© OpenStreetMap contributors, giấy phép [ODbL](https://www.openstreetmap.org/copyright)), nạp bằng script `pnpm --filter @vibespot/api db:import-osm`. App hiển thị dòng ghi nguồn này ở màn hình thông tin.
 
 ## Chạy thử trên máy
 

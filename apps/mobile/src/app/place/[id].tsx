@@ -202,7 +202,7 @@ export default function PlaceDetailScreen() {
               onSelect={() => undefined}
               onMove={() => undefined}
             />
-            <Text style={styles.miniAttribution}>© OpenStreetMap contributors © CARTO</Text>
+            <Text style={styles.miniAttribution}>© OpenStreetMap contributors</Text>
           </View>
 
           <Button

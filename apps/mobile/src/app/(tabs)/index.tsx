@@ -148,7 +148,7 @@ export default function MapScreen() {
       </View>
 
       <View style={styles.bottom}>
-        <Text style={styles.attribution}>© OpenStreetMap contributors © CARTO</Text>
+        <Text style={styles.attribution}>© OpenStreetMap contributors</Text>
         {selected ? (
           <PlaceCard
             place={selected}
