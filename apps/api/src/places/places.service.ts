@@ -16,6 +16,9 @@ import { PrismaService } from '../prisma/prisma.service.js';
 const COLUMNS = Prisma.sql`
   id, name, category, address, district, attributes, "openingHours", status, source,
   "avgRating", "reviewCount",
+  (SELECT ph.url FROM "Photo" ph
+    WHERE ph."placeId" = "Place".id AND ph.status = 'APPROVED'
+    ORDER BY ph."createdAt" ASC LIMIT 1) AS "coverUrl",
   ST_Y(location::geometry) AS lat, ST_X(location::geometry) AS lng`;
 
 type PlaceRow = Omit<Place, 'distanceMeters'> & { distanceMeters?: number | null };
@@ -91,11 +94,33 @@ export class PlacesService {
     return rows.map(toPlace);
   }
 
+  // Dành cho admin: liệt kê theo trạng thái kiểm duyệt (cũ nhất trước).
+  async findByStatus(status: 'PENDING' | 'APPROVED' | 'REJECTED', limit: number): Promise<Place[]> {
+    const rows = await this.prisma.$queryRaw<PlaceRow[]>`
+      SELECT ${COLUMNS} FROM "Place"
+      WHERE status = ${status}::"PlaceStatus"
+      ORDER BY "createdAt" ASC
+      LIMIT ${limit}`;
+    return rows.map(toPlace);
+  }
+
+  // Quán đã lưu của người dùng, mới lưu xếp trước. Chỉ trả quán còn được duyệt.
+  async findFavorites(userId: string): Promise<Place[]> {
+    const rows = await this.prisma.$queryRaw<PlaceRow[]>`
+      SELECT ${COLUMNS} FROM "Place"
+      WHERE status = 'APPROVED'
+        AND id IN (SELECT "placeId" FROM "Favorite" WHERE "userId" = ${userId}::uuid)
+      ORDER BY (SELECT f."createdAt" FROM "Favorite" f
+                WHERE f."userId" = ${userId}::uuid AND f."placeId" = "Place".id) DESC
+      LIMIT 200`;
+    return rows.map(toPlace);
+  }
+
   async findOne(id: string): Promise<Place> {
     const rows = await this.prisma.$queryRaw<PlaceRow[]>`
       SELECT ${COLUMNS} FROM "Place" WHERE id = ${id}::uuid AND status = 'APPROVED'`;
     if (!rows[0]) throw new NotFoundException('Không tìm thấy địa điểm');
-    return toPlace(rows[0]);
+    return toPlace(rows[0]); 
   }
 
   async create(input: CreatePlaceInput, user: AuthUser): Promise<Place> {
@@ -114,8 +139,10 @@ export class PlacesService {
       LIMIT 1`;
     if (duplicate.length > 0) throw new ConflictException('Địa điểm này đã tồn tại');
 
-    // Admin đăng thì duyệt luôn; người dùng thường chờ duyệt.
-    const status = user.role === 'ADMIN' ? 'APPROVED' : 'PENDING';
+    // Admin đăng thì duyệt luôn; người dùng thường chờ duyệt. Tra role trong DB thay vì token
+    // (token sống 15 phút) để quyền admin vừa được cấp/gỡ có hiệu lực ngay.
+    const author = await this.prisma.user.findUnique({ where: { id: user.id }, select: { role: true } });
+    const status = author?.role === 'ADMIN' ? 'APPROVED' : 'PENDING';
 
     // Prisma không ghi được cột geography nên dùng SQL thô. id và updatedAt do Prisma
     // (không phải DB) sinh mặc định, nên ở đây phải tự điền.

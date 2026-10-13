@@ -4,6 +4,7 @@ import { APP_GUARD } from '@nestjs/core';
 import { ThrottlerGuard, ThrottlerModule } from '@nestjs/throttler';
 import { LoggerModule } from 'nestjs-pino';
 import { validateEnv } from './config/env.js';
+import { AdminModule } from './admin/admin.module.js';
 import { AuthModule } from './auth/auth.module.js';
 import { HealthModule } from './health/health.module.js';
 import { PlacesModule } from './places/places.module.js';
@@ -35,6 +36,7 @@ const isProd = process.env.NODE_ENV === 'production';
     ReviewsModule,
     UploadsModule,
     PhotosModule,
+    AdminModule,
   ],
   providers: [{ provide: APP_GUARD, useClass: ThrottlerGuard }],
 })

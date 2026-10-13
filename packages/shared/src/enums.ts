@@ -3,8 +3,12 @@ import { z } from 'zod';
 export const PlaceCategory = z.enum(['CAFE', 'PARKING', 'EV_CHARGING']);
 export type PlaceCategory = z.infer<typeof PlaceCategory>;
 
-export const PlaceStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED']);
-export type PlaceStatus = z.infer<typeof PlaceStatus>;
+// Trạng thái kiểm duyệt dùng chung cho quán và ảnh do người dùng đóng góp.
+export const ModerationStatus = z.enum(['PENDING', 'APPROVED', 'REJECTED']);
+export type ModerationStatus = z.infer<typeof ModerationStatus>;
+
+export const PlaceStatus = ModerationStatus;
+export type PlaceStatus = ModerationStatus;
 
 export const PlaceSource = z.enum(['USER', 'OSM']);
 export type PlaceSource = z.infer<typeof PlaceSource>;

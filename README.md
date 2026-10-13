@@ -23,3 +23,23 @@ pnpm --filter @vibespot/api db:import-osm # nạp quán cà phê từ OpenStreet
 pnpm dev:api      # terminal 1: API tại http://localhost:3000 (Swagger: /docs)
 pnpm dev:mobile   # terminal 2: quét mã QR bằng Expo Go
 ```
+
+## Kiểm duyệt nội dung
+
+Quán và ảnh do người dùng đóng góp **luôn chờ admin duyệt** trước khi hiện công khai (nội dung của chính admin thì tự duyệt).
+
+```bash
+# Cấp quyền admin cho một tài khoản đã đăng ký (chỉ làm được bằng dòng lệnh, không có API tự nâng quyền)
+pnpm --filter @vibespot/api db:make-admin email@example.com
+```
+
+Admin duyệt qua Swagger (`/docs`, bấm Authorize và dán access token của tài khoản admin):
+
+| Endpoint | Chức năng |
+|---|---|
+| `GET /api/admin/photos?status=PENDING` | Ảnh đang chờ (cũ nhất trước) |
+| `PATCH /api/admin/photos/:id` | `{ "status": "APPROVED" \| "REJECTED" }` |
+| `GET /api/admin/places?status=PENDING` | Quán đang chờ |
+| `PATCH /api/admin/places/:id` | `{ "status": "APPROVED" \| "REJECTED" }` |
+
+Quyền admin được kiểm tra trong database ở mỗi request nên gỡ quyền có hiệu lực ngay, không phải chờ access token hết hạn.

@@ -1,4 +1,5 @@
 import { z } from 'zod';
+import { ModerationStatus } from './enums';
 
 // Mỗi người được đăng tối đa bấy nhiêu ảnh cho một quán.
 export const MAX_PHOTOS_PER_USER_PER_PLACE = 5;
@@ -13,6 +14,7 @@ export type CreatePhotoInput = z.infer<typeof createPhotoSchema>;
 export const photoSchema = z.object({
   id: z.string(),
   url: z.string(),
+  status: ModerationStatus,
   createdAt: z.string(),
   user: z.object({ id: z.string(), displayName: z.string() }),
 });

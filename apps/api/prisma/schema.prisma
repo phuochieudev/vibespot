@@ -29,6 +29,12 @@ enum PlaceSource {
   OSM
 }
 
+enum PhotoStatus {
+  PENDING
+  APPROVED
+  REJECTED
+}
+
 enum ReportStatus {
   OPEN
   RESOLVED
@@ -127,12 +133,17 @@ model Photo {
   userId    String   @db.Uuid
   url       String
   publicId  String
-  createdAt DateTime @default(now())
+  // Ảnh mới luôn chờ duyệt; chỉ ảnh APPROVED mới hiện cho mọi người.
+  status       PhotoStatus @default(PENDING)
+  reviewedAt   DateTime?
+  reviewedById String?     @db.Uuid
+  createdAt    DateTime    @default(now())
 
   place Place @relation(fields: [placeId], references: [id], onDelete: Cascade)
   user  User  @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([placeId])
+  @@index([placeId, status])
+  @@index([status, createdAt])
 }
 
 model WifiTest {

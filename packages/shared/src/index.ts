@@ -6,3 +6,5 @@ export * from './review';
 export * from './search';
 export * from './geo';
 export * from './photo';
+export * from './admin';
+export * from './me';

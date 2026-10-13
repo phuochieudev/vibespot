@@ -1,6 +1,6 @@
 import { Body, Controller, Get, Inject, NotFoundException, Patch, UseGuards } from '@nestjs/common';
 import { ApiBearerAuth, ApiBody, ApiTags } from '@nestjs/swagger';
-import { updateProfileSchema, type UpdateProfileInput } from '@vibespot/shared';
+import { updateProfileSchema, type MeStats, type UpdateProfileInput } from '@vibespot/shared';
 import { CurrentUser } from '../auth/current-user.decorator.js';
 import type { AuthUser } from '../auth/auth.types.js';
 import { JwtAuthGuard } from '../auth/jwt-auth.guard.js';
@@ -21,6 +21,16 @@ export class UsersController {
     const user = await this.prisma.user.findUnique({ where: { id: auth.id } });
     if (!user) throw new NotFoundException('User not found');
     return toUserDto(user);
+  }
+
+  @Get('stats')
+  async stats(@CurrentUser() auth: AuthUser): Promise<MeStats> {
+    const [reviewCount, favoriteCount, placeCount] = await Promise.all([
+      this.prisma.review.count({ where: { userId: auth.id } }),
+      this.prisma.favorite.count({ where: { userId: auth.id } }),
+      this.prisma.place.count({ where: { createdById: auth.id } }),
+    ]);
+    return { reviewCount, favoriteCount, placeCount };
   }
 
   @Patch()

@@ -37,6 +37,8 @@ export const placeSchema = z.object({
   attributes: z.record(z.string(), z.unknown()),
   // Giờ mở cửa dạng chuỗi gốc của OSM (vd. "Mo-Su 07:00-22:00"); null nếu chưa có.
   openingHours: z.object({ raw: z.string() }).nullable(),
+  // Ảnh đầu tiên đã được duyệt của quán (dùng làm ảnh bìa); null nếu chưa có ảnh.
+  coverUrl: z.string().nullable(),
   status: PlaceStatus,
   source: PlaceSource,
   avgRating: z.number().min(0).max(5),
