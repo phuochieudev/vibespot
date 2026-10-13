@@ -9,3 +9,4 @@ apps/api/prisma/seed/.cache
 apps/mobile/.expo
 *.tsbuildinfo
 docs
+apps/mobile/expo-env.d.ts
