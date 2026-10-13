@@ -1,0 +1,27 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <defs>
+    <linearGradient id="background" x1="54" y1="38" x2="456" y2="488" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#159A82"/>
+      <stop offset="0.48" stop-color="#00645F"/>
+      <stop offset="1" stop-color="#004B50"/>
+    </linearGradient>
+    <linearGradient id="gold" x1="220" y1="100" x2="300" y2="285" gradientUnits="userSpaceOnUse">
+      <stop offset="0" stop-color="#FFD64A"/>
+      <stop offset="1" stop-color="#FFB51B"/>
+    </linearGradient>
+  </defs>
+
+  <!-- Rounded-square teal app background -->
+  <rect x="12" y="12" width="488" height="488" rx="112" fill="url(#background)"/>
+
+  <!-- Folded map outline, with the three distinct panels -->
+  <path d="M113 253 L176 224 Q184 220 193 225 L249 258 L249 354 L182 389 Q174 393 165 388 L112 360 Q105 356 105 347 L105 267 Q105 258 113 253 Z"
+        fill="none" stroke="#FFFDF5" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M249 258 L316 224 Q324 220 333 225 L397 253 Q406 257 406 267 L406 347 Q406 356 397 360 L332 389 Q324 393 315 388 L249 354"
+        fill="none" stroke="#FFFDF5" stroke-width="19" stroke-linecap="round" stroke-linejoin="round"/>
+
+  <!-- Location pin in front of the map -->
+  <path d="M256 78 C218 78 189 107 189 145 C189 196 256 268 256 268 C256 268 323 196 323 145 C323 107 294 78 256 78 Z"
+        fill="url(#gold)"/>
+  <circle cx="256" cy="145" r="24" fill="#075B58"/>
+</svg>
