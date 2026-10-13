@@ -15,3 +15,7 @@ apps/api/src/generated
 
 # Cache dữ liệu OSM tải về
 apps/api/prisma/seed/.cache
+
+# Tài liệu nội bộ: không đưa lên GitHub (chỉ README.md được công khai)
+*.md
+!README.md
