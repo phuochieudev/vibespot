@@ -37,14 +37,20 @@ jobs:
     steps:
       - uses: actions/checkout@v4
       - uses: docker/setup-buildx-action@v3
-      # Chỉ build để chắc Dockerfile không hỏng; chưa đẩy image đi đâu (push: false).
+      # Build image (chưa đẩy đi đâu) rồi chạy thử công cụ migration bên trong để bắt sớm lỗi kiểu
+      # thiếu OpenSSL hoặc thiếu quyền ghi mà chỉ lộ ra khi chạy trên server.
       - uses: docker/build-push-action@v6
         with:
           context: .
           file: apps/api/Dockerfile
-          push: false
+          load: true
+          tags: vibespot-api:ci
           cache-from: type=gha
           cache-to: type=gha,mode=max
+      - name: Smoke test image
+        run: |
+          docker run --rm --entrypoint node_modules/.bin/prisma vibespot-api:ci --version
+          docker run --rm --entrypoint node vibespot-api:ci -e "import('@vibespot/shared').then(m => console.log('shared OK, exports:', Object.keys(m).length))"
 
   e2e:
     name: API e2e (cần database thật)

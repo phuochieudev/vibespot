@@ -1,7 +1,15 @@
 # syntax=docker/dockerfile:1
 # Build từ thư mục GỐC của monorepo:  docker build -f apps/api/Dockerfile -t vibespot-api .
 
-FROM node:20-slim AS base
+# ---- os: nền chung cho cả build và runtime ----
+FROM node:20-slim AS os
+# Prisma cần OpenSSL để nhận đúng hệ điều hành và tải đúng công cụ migration (thiếu thì nó đoán
+# "openssl-1.1.x" và tải nhầm bản); ca-certificates để kết nối TLS tới Neon.
+RUN apt-get update -y \
+  && apt-get install -y --no-install-recommends openssl ca-certificates \
+  && rm -rf /var/lib/apt/lists/*
+
+FROM os AS base
 ENV CI=true
 RUN corepack enable && corepack prepare pnpm@10.15.0 --activate
 WORKDIR /app
@@ -22,12 +30,16 @@ COPY apps/api apps/api
 RUN pnpm --filter @vibespot/shared build && pnpm --filter @vibespot/api build
 # Gói API cùng thư viện production và `shared` vào /out (không kèm mobile, devDependencies).
 RUN pnpm --filter @vibespot/api deploy --legacy --prod /out
+# Kiểm tra ngay lúc build rằng công cụ migration của Prisma đã có đủ và chạy được. Nếu thiếu, build
+# thất bại tại đây thay vì để container sập lúc khởi động trên server.
+RUN cd /out && node_modules/.bin/prisma --version
 
 # ---- runtime: ảnh nhỏ chỉ có những gì cần để chạy ----
-FROM node:20-slim AS runtime
+FROM os AS runtime
 ENV NODE_ENV=production
 WORKDIR /app
-COPY --from=build /out ./
+# --chown: user "node" sở hữu thư mục, phòng khi Prisma cần ghi file công cụ lúc chạy.
+COPY --from=build --chown=node:node /out ./
 # Không chạy bằng root.
 USER node
 EXPOSE 3000
