@@ -2,7 +2,7 @@
 
 A mobile app for finding work-friendly cafés in Ho Chi Minh City, with data contributed by the community.
 
-**API docs:** [vibespot-api.onrender.com/docs](https://vibespot-api.onrender.com/docs) · **Android APK:** [GitHub Releases](https://github.com/phuochieudev/vibespot/releases)
+**Demo video:** [Watch the walkthrough](https://youtu.be/8BMYu0Vsfk8) · **API docs:** [vibespot-api.onrender.com/docs](https://vibespot-api.onrender.com/docs) · **Android APK:** [GitHub Releases](https://github.com/phuochieudev/vibespot/releases)
 
 > The API runs on a free tier and sleeps when idle, so the first request after a pause can take up to ~50 seconds.
 
