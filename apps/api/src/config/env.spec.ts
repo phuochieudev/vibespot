@@ -22,4 +22,17 @@ describe('validateEnv', () => {
     expect(() => validateEnv({ ...base, PORT: 'abc' })).toThrow(/PORT/);
     expect(() => validateEnv({ ...base, JWT_ACCESS_SECRET: 'ngan' })).toThrow(/JWT_ACCESS_SECRET/);
   });
+
+  it('biến tuỳ chọn để trống được coi như chưa đặt', () => {
+    const env = validateEnv({ ...base, DIRECT_URL: '', CLOUD_NAME: '   ', CLOUD_API_KEY: '' });
+    expect(env.DIRECT_URL).toBeUndefined();
+    expect(env.CLOUD_NAME).toBeUndefined();
+    expect(env.CLOUD_API_KEY).toBeUndefined();
+  });
+
+  it('biến tuỳ chọn có giá trị thì giữ nguyên', () => {
+    expect(validateEnv({ ...base, DIRECT_URL: 'postgresql://direct' }).DIRECT_URL).toBe(
+      'postgresql://direct',
+    );
+  });
 });
