@@ -1,4 +1,5 @@
 import type { UploadSignature } from '@vibespot/shared';
+import { File } from 'expo-file-system';
 import { api } from '@/lib/api';
 
 export interface UploadedImage {
@@ -12,8 +13,10 @@ export async function uploadImage(uri: string): Promise<UploadedImage> {
   const sig = await api<UploadSignature>('/uploads/signature', { method: 'POST', auth: true });
 
   const form = new FormData();
-  // React Native cho phép đưa { uri, name, type } vào FormData để gửi file từ bộ nhớ máy.
-  form.append('file', { uri, name: 'photo.jpg', type: 'image/jpeg' } as unknown as Blob);
+  // Expo (SDK 53+) dùng fetch chuẩn web: phần file của FormData phải là Blob hoặc đối tượng có
+  // bytes() như File của expo-file-system. Kiểu cũ { uri, name, type } của React Native bị từ chối
+  // với lỗi "Unsupported FormDataPart implementation".
+  form.append('file', new File(uri) as unknown as Blob);
   form.append('api_key', sig.apiKey);
   form.append('timestamp', String(sig.timestamp));
   form.append('folder', sig.folder);

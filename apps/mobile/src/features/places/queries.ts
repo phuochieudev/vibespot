@@ -1,5 +1,5 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { CreatePlaceInput, CreateReviewInput, Photo, Place, Review } from '@vibespot/shared';
+import type { AdminPhoto, CreatePlaceInput, CreateReviewInput, MeStats, Photo, Place, Review } from '@vibespot/shared';
 import { uploadImage } from '@/features/photos/upload';
 import { api } from '@/lib/api';
 import type { Filters } from '@/stores/map-store';
@@ -104,5 +104,76 @@ export function useAddPhoto(id: string) {
       return api<Photo>(`/places/${id}/photos`, { method: 'POST', auth: true, body: image });
     },
     onSuccess: () => void client.invalidateQueries({ queryKey: ['photos', id] }),
+  });
+}
+
+// ---- Quản trị (chỉ tài khoản ADMIN; server vẫn kiểm tra quyền ở mọi request) ----
+
+export function useAdminPhotos(enabled: boolean) {
+  return useQuery({
+    queryKey: ['admin', 'photos'],
+    queryFn: () => api<AdminPhoto[]>('/admin/photos', { auth: true, params: { status: 'PENDING' } }),
+    enabled,
+  });
+}
+
+export function useAdminPlaces(enabled: boolean) {
+  return useQuery({
+    queryKey: ['admin', 'places'],
+    queryFn: () => api<Place[]>('/admin/places', { auth: true, params: { status: 'PENDING' } }),
+    enabled,
+  });
+}
+
+export function useModerate(kind: 'photos' | 'places') {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ id, status }: { id: string; status: 'APPROVED' | 'REJECTED' }) =>
+      api(`/admin/${kind}/${id}`, { method: 'PATCH', auth: true, body: { status } }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['admin', kind] });
+      // Duyệt xong thì nội dung công khai thay đổi theo.
+      void client.invalidateQueries({ queryKey: [kind === 'photos' ? 'photos' : 'places'] });
+    },
+  });
+}
+
+// ---- Tìm kiếm, quán đã lưu, thống kê hồ sơ ----
+
+export function useSearch(q: string, near: { lat: number; lng: number }) {
+  const text = q.trim();
+  return useQuery({
+    queryKey: ['places', 'search', text, near.lat.toFixed(2), near.lng.toFixed(2)],
+    queryFn: () =>
+      api<Place[]>('/places/search', { params: { q: text, lat: near.lat, lng: near.lng, limit: 8 } }),
+    enabled: text.length > 0,
+  });
+}
+
+export function useFavorites(enabled: boolean) {
+  return useQuery({
+    queryKey: ['favorites'],
+    queryFn: () => api<Place[]>('/me/favorites', { auth: true }),
+    enabled,
+  });
+}
+
+export function useToggleFavorite() {
+  const client = useQueryClient();
+  return useMutation({
+    mutationFn: ({ placeId, saved }: { placeId: string; saved: boolean }) =>
+      api(`/places/${placeId}/favorite`, { method: saved ? 'DELETE' : 'PUT', auth: true }),
+    onSuccess: () => {
+      void client.invalidateQueries({ queryKey: ['favorites'] });
+      void client.invalidateQueries({ queryKey: ['me', 'stats'] });
+    },
+  });
+}
+
+export function useMeStats(enabled: boolean) {
+  return useQuery({
+    queryKey: ['me', 'stats'],
+    queryFn: () => api<MeStats>('/me/stats', { auth: true }),
+    enabled,
   });
 }

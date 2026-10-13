@@ -1,34 +1,43 @@
-import { ActivityIndicator, Pressable, StyleSheet, Text } from 'react-native';
+import type { ReactNode } from 'react';
+import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
 import { colors, radius } from '@/theme';
 
 interface Props {
   label: string;
   onPress: () => void;
   loading?: boolean;
-  variant?: 'primary' | 'ghost';
+  /** primary: nền xanh; outline: viền, nền trắng; ghost: chỉ chữ */
+  variant?: 'primary' | 'outline' | 'ghost';
+  icon?: ReactNode;
+  disabled?: boolean;
 }
 
-export function Button({ label, onPress, loading, variant = 'primary' }: Props) {
-  const primary = variant === 'primary';
+export function Button({ label, onPress, loading, variant = 'primary', icon, disabled }: Props) {
+  const textColor = variant === 'primary' ? '#fff' : variant === 'outline' ? colors.text : colors.primary;
   return (
     <Pressable
       onPress={onPress}
-      disabled={loading}
-      style={[styles.base, primary ? styles.primary : styles.ghost, loading && styles.disabled]}
+      disabled={loading || disabled}
+      style={[styles.base, styles[variant], (loading || disabled) && styles.disabled]}
     >
       {loading ? (
-        <ActivityIndicator color={primary ? '#fff' : colors.primary} />
+        <ActivityIndicator color={textColor} />
       ) : (
-        <Text style={[styles.label, { color: primary ? '#fff' : colors.primary }]}>{label}</Text>
+        <View style={styles.content}>
+          {icon}
+          <Text style={[styles.label, { color: textColor }]}>{label}</Text>
+        </View>
       )}
     </Pressable>
   );
 }
 
 const styles = StyleSheet.create({
-  base: { height: 48, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  base: { height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
   primary: { backgroundColor: colors.primary },
-  ghost: { backgroundColor: 'transparent' },
-  disabled: { opacity: 0.7 },
+  outline: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.border },
+  ghost: { backgroundColor: 'transparent', height: 44 },
+  disabled: { opacity: 0.55 },
+  content: { flexDirection: 'row', alignItems: 'center', gap: 8 },
   label: { fontSize: 16, fontWeight: '700' },
 });

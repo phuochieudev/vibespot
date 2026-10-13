@@ -5,6 +5,7 @@ import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } fr
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { Button } from '@/components/button';
 import { ChipSelect } from '@/components/chip-select';
+import { ScreenHeader } from '@/components/screen-header';
 import { TextField } from '@/components/text-field';
 import { useCreatePlace } from '@/features/places/queries';
 import { useAuth } from '@/stores/auth-store';
@@ -55,7 +56,8 @@ export default function AddPlaceScreen() {
 
   if (!user) {
     return (
-      <View style={[styles.gate, { paddingTop: insets.top + 40 }]}>
+      <View style={[styles.gate, { paddingTop: insets.top + 8 }]}>
+        <ScreenHeader />
         <Text style={styles.title}>Cần đăng nhập</Text>
         <Text style={styles.muted}>Đăng nhập để thêm quán và giúp mọi người tìm chỗ làm việc.</Text>
         <Button label="Đăng nhập" onPress={() => router.replace('/login')} />
@@ -65,7 +67,8 @@ export default function AddPlaceScreen() {
 
   if (create.isSuccess) {
     return (
-      <View style={[styles.gate, { paddingTop: insets.top + 40 }]}>
+      <View style={[styles.gate, { paddingTop: insets.top + 8 }]}>
+        <ScreenHeader />
         <Text style={styles.title}>Cảm ơn bạn!</Text>
         <Text style={styles.muted}>
           Quán "{create.data.name}" đã được gửi và sẽ xuất hiện trên bản đồ sau khi được duyệt. Bạn xem
@@ -101,9 +104,9 @@ export default function AddPlaceScreen() {
     <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + 20 }]}
+        contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}
       >
-        <Text style={styles.title}>Thêm quán</Text>
+        <ScreenHeader title="Thêm quán" />
 
         <TextField label="Tên quán" value={name} onChangeText={setName} autoCapitalize="words" />
         <TextField label="Địa chỉ" value={address} onChangeText={setAddress} placeholder="Số nhà, đường, phường" />

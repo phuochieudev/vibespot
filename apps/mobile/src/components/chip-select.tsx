@@ -1,12 +1,12 @@
 import { Pressable, StyleSheet, Text, View } from 'react-native';
-import { colors } from '@/theme';
+import { colors, radius } from '@/theme';
 
 interface Option<T extends string> {
   value: T;
   label: string;
 }
 
-// Hàng chip: chọn một (có thể bỏ chọn bằng cách bấm lại) hoặc bật/tắt nhiều.
+// Hàng chip: chọn một (bấm lại để bỏ chọn) hoặc bật/tắt nhiều.
 export function ChipSelect<T extends string>({
   options,
   selected,
@@ -37,9 +37,9 @@ export function ChipSelect<T extends string>({
 const styles = StyleSheet.create({
   row: { flexDirection: 'row', flexWrap: 'wrap', gap: 8 },
   chip: {
-    paddingHorizontal: 14,
-    paddingVertical: 8,
-    borderRadius: 999,
+    paddingHorizontal: 16,
+    paddingVertical: 9,
+    borderRadius: radius.pill,
     borderWidth: 1,
     borderColor: colors.border,
     backgroundColor: colors.bg,

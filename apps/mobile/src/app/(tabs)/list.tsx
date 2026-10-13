@@ -4,6 +4,7 @@ import { FlatList, StyleSheet, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { FilterBar } from '@/components/filter-bar';
 import { PlaceCard, distanceFrom } from '@/components/place-card';
+import { ScreenHeader } from '@/components/screen-header';
 import { useNearbyPlaces } from '@/features/places/queries';
 import { useMapStore } from '@/stores/map-store';
 import { colors } from '@/theme';
@@ -26,9 +27,9 @@ export default function ListScreen() {
 
   return (
     <View style={[styles.container, { paddingTop: insets.top }]}>
-      <Text style={styles.title}>Quán gần bạn</Text>
-      <View style={styles.filters}>
-        <FilterBar />
+      <ScreenHeader title="Quán gần bạn" style={styles.pad} />
+      <View style={[styles.pad, styles.filters]}>
+        <FilterBar withCategory />
       </View>
       <FlatList
         data={places}
@@ -45,7 +46,13 @@ export default function ListScreen() {
         )}
         ListEmptyComponent={
           <Text style={styles.empty}>
-            {isLoading ? 'Đang tải...' : isError ? 'Không kết nối được máy chủ.' : filtering ? 'Không có quán nào khớp bộ lọc.' : 'Chưa có quán nào quanh đây.'}
+            {isLoading
+              ? 'Đang tải...'
+              : isError
+                ? 'Không kết nối được máy chủ.'
+                : filtering
+                  ? 'Không có quán nào khớp bộ lọc.'
+                  : 'Chưa có quán nào quanh đây.'}
           </Text>
         }
       />
@@ -55,8 +62,8 @@ export default function ListScreen() {
 
 const styles = StyleSheet.create({
   container: { flex: 1, backgroundColor: colors.surface },
-  title: { fontSize: 24, fontWeight: '800', color: colors.text, paddingHorizontal: 16, paddingVertical: 12 },
-  filters: { paddingBottom: 8, alignItems: 'flex-start', paddingHorizontal: 16 },
-  list: { paddingHorizontal: 16, paddingBottom: 24, gap: 10 },
+  pad: { paddingHorizontal: 16 },
+  filters: { paddingBottom: 12 },
+  list: { paddingHorizontal: 16, paddingTop: 4, paddingBottom: 24, gap: 12 },
   empty: { textAlign: 'center', color: colors.muted, marginTop: 40 },
 });

@@ -5,13 +5,18 @@ export const MAP_HTML = `<!doctype html>
 <html><head>
 <meta name="viewport" content="width=device-width,initial-scale=1,maximum-scale=1,user-scalable=no">
 <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css">
-<style>html,body,#map{height:100%;margin:0;background:#f2efe9}</style>
+<style>html,body,#map{height:100%;margin:0;background:#eef1f0}</style>
 </head><body><div id="map"></div>
 <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"></script>
 <script>
 var post = function (m) { window.ReactNativeWebView.postMessage(JSON.stringify(m)); };
 var map = L.map('map', { zoomControl: false, attributionControl: false }).setView([10.7769, 106.7009], 15);
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', { maxZoom: 19 }).addTo(map);
+// Ô bản đồ nhạt (CARTO "Positron", dữ liệu OpenStreetMap) để ghim quán nổi bật hơn.
+// {r} tự chọn bản độ phân giải cao trên màn hình retina.
+L.tileLayer('https://{s}.basemaps.cartocdn.com/light_all/{z}/{x}/{y}{r}.png', {
+  subdomains: 'abcd',
+  maxZoom: 20
+}).addTo(map);
 
 var layer = L.layerGroup().addTo(map);
 var markers = {};
@@ -23,7 +28,7 @@ function style(isSelected) {
     radius: isSelected ? 13 : 10,
     color: '#ffffff',
     weight: 3,
-    fillColor: isSelected ? '#C2410C' : '#E8590C',
+    fillColor: isSelected ? '#3730A3' : '#4F46E5',
     fillOpacity: 1
   };
 }
@@ -47,7 +52,11 @@ window.setSelected = function (id) {
 
 window.setMe = function (lat, lng) {
   if (meDot) map.removeLayer(meDot);
-  meDot = L.circleMarker([lat, lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#2563EB', fillOpacity: 1 }).addTo(map);
+  // Vòng sáng mờ bên ngoài + chấm xanh viền trắng ở giữa.
+  meDot = L.layerGroup([
+    L.circleMarker([lat, lng], { radius: 20, stroke: false, fillColor: '#2563EB', fillOpacity: 0.18, interactive: false }),
+    L.circleMarker([lat, lng], { radius: 8, color: '#fff', weight: 3, fillColor: '#2563EB', fillOpacity: 1, interactive: false })
+  ]).addTo(map);
 };
 
 window.setView = function (lat, lng, zoom) { map.setView([lat, lng], zoom || 15); };
