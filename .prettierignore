@@ -1,0 +1,11 @@
+node_modules
+dist
+.turbo
+.expo
+pnpm-lock.yaml
+apps/api/src/generated
+apps/api/prisma/migrations
+apps/api/prisma/seed/.cache
+apps/mobile/.expo
+*.tsbuildinfo
+docs

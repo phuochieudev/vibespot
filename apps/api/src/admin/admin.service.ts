@@ -50,7 +50,10 @@ export class AdminService {
       data: { status: input.status, reviewedAt: new Date(), reviewedById: adminId },
     });
     if (count === 0) throw new NotFoundException('Không tìm thấy ảnh');
-    const row = await this.prisma.photo.findUniqueOrThrow({ where: { id }, include: PHOTO_INCLUDE });
+    const row = await this.prisma.photo.findUniqueOrThrow({
+      where: { id },
+      include: PHOTO_INCLUDE,
+    });
     return toPhotoDto(row);
   }
 
@@ -59,7 +62,10 @@ export class AdminService {
   }
 
   async moderatePlace(id: string, input: ModerateInput): Promise<{ id: string; status: string }> {
-    const { count } = await this.prisma.place.updateMany({ where: { id }, data: { status: input.status } });
+    const { count } = await this.prisma.place.updateMany({
+      where: { id },
+      data: { status: input.status },
+    });
     if (count === 0) throw new NotFoundException('Không tìm thấy địa điểm');
     return { id, status: input.status };
   }

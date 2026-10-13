@@ -1,5 +1,13 @@
 import { keepPreviousData, useMutation, useQuery, useQueryClient } from '@tanstack/react-query';
-import type { AdminPhoto, CreatePlaceInput, CreateReviewInput, MeStats, Photo, Place, Review } from '@vibespot/shared';
+import type {
+  AdminPhoto,
+  CreatePlaceInput,
+  CreateReviewInput,
+  MeStats,
+  Photo,
+  Place,
+  Review,
+} from '@vibespot/shared';
 import { uploadImage } from '@/features/photos/upload';
 import { api } from '@/lib/api';
 import type { Filters } from '@/stores/map-store';
@@ -112,7 +120,8 @@ export function useAddPhoto(id: string) {
 export function useAdminPhotos(enabled: boolean) {
   return useQuery({
     queryKey: ['admin', 'photos'],
-    queryFn: () => api<AdminPhoto[]>('/admin/photos', { auth: true, params: { status: 'PENDING' } }),
+    queryFn: () =>
+      api<AdminPhoto[]>('/admin/photos', { auth: true, params: { status: 'PENDING' } }),
     enabled,
   });
 }
@@ -145,7 +154,9 @@ export function useSearch(q: string, near: { lat: number; lng: number }) {
   return useQuery({
     queryKey: ['places', 'search', text, near.lat.toFixed(2), near.lng.toFixed(2)],
     queryFn: () =>
-      api<Place[]>('/places/search', { params: { q: text, lat: near.lat, lng: near.lng, limit: 8 } }),
+      api<Place[]>('/places/search', {
+        params: { q: text, lat: near.lat, lng: near.lng, limit: 8 },
+      }),
     enabled: text.length > 0,
   });
 }

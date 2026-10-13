@@ -1,4 +1,10 @@
-import { BadRequestException, ConflictException, Inject, Injectable, NotFoundException } from '@nestjs/common';
+import {
+  BadRequestException,
+  ConflictException,
+  Inject,
+  Injectable,
+  NotFoundException,
+} from '@nestjs/common';
 import {
   isInServiceArea,
   toSearchText,
@@ -120,7 +126,7 @@ export class PlacesService {
     const rows = await this.prisma.$queryRaw<PlaceRow[]>`
       SELECT ${COLUMNS} FROM "Place" WHERE id = ${id}::uuid AND status = 'APPROVED'`;
     if (!rows[0]) throw new NotFoundException('Không tìm thấy địa điểm');
-    return toPlace(rows[0]); 
+    return toPlace(rows[0]);
   }
 
   async create(input: CreatePlaceInput, user: AuthUser): Promise<Place> {
@@ -141,7 +147,10 @@ export class PlacesService {
 
     // Admin đăng thì duyệt luôn; người dùng thường chờ duyệt. Tra role trong DB thay vì token
     // (token sống 15 phút) để quyền admin vừa được cấp/gỡ có hiệu lực ngay.
-    const author = await this.prisma.user.findUnique({ where: { id: user.id }, select: { role: true } });
+    const author = await this.prisma.user.findUnique({
+      where: { id: user.id },
+      select: { role: true },
+    });
     const status = author?.role === 'ADMIN' ? 'APPROVED' : 'PENDING';
 
     // Prisma không ghi được cột geography nên dùng SQL thô. id và updatedAt do Prisma

@@ -57,7 +57,11 @@ export default function AdminScreen() {
           ListEmptyComponent={<Text style={styles.empty}>Không có ảnh nào đang chờ duyệt.</Text>}
           renderItem={({ item }) => (
             <View style={styles.card}>
-              <Image source={{ uri: thumb(item.url, 600, 400) }} style={styles.photo} contentFit="cover" />
+              <Image
+                source={{ uri: thumb(item.url, 600, 400) }}
+                style={styles.photo}
+                contentFit="cover"
+              />
               <Text style={styles.title}>{item.place.name}</Text>
               <Text style={styles.muted}>Đăng bởi {item.user.displayName}</Text>
               <Actions busy={busyId === item.id} onDecide={(s) => decide(item.id, s)} />
@@ -91,11 +95,22 @@ export default function AdminScreen() {
   );
 }
 
-function Actions({ busy, onDecide }: { busy: boolean; onDecide: (s: 'APPROVED' | 'REJECTED') => void }) {
+function Actions({
+  busy,
+  onDecide,
+}: {
+  busy: boolean;
+  onDecide: (s: 'APPROVED' | 'REJECTED') => void;
+}) {
   return (
     <View style={styles.actions}>
       <View style={styles.flex}>
-        <Button label="Từ chối" variant="ghost" onPress={() => onDecide('REJECTED')} loading={busy} />
+        <Button
+          label="Từ chối"
+          variant="ghost"
+          onPress={() => onDecide('REJECTED')}
+          loading={busy}
+        />
       </View>
       <View style={styles.flex}>
         <Button label="Duyệt" onPress={() => onDecide('APPROVED')} loading={busy} />

@@ -49,9 +49,30 @@ export function EnvelopeIllustration({ width = 220 }: { width?: number }) {
       <Ellipse cx={110} cy={118} rx={80} ry={14} fill={SOFT} />
       <Path d="M150 30 L196 14 L172 50 L162 40 Z" fill={GREEN} />
       <Path d="M150 30 L162 40 L158 54 Z" fill="#0E4A3B" />
-      <Path d="M40 70 C70 40 110 30 146 32" stroke={GREEN} strokeWidth={2} strokeDasharray="5 5" fill="none" />
-      <Rect x={58} y={64} width={110} height={70} rx={10} fill="#fff" stroke={GREEN} strokeWidth={3} />
-      <Path d="M58 72 L113 108 L168 72" stroke={GREEN} strokeWidth={3} fill="none" strokeLinejoin="round" />
+      <Path
+        d="M40 70 C70 40 110 30 146 32"
+        stroke={GREEN}
+        strokeWidth={2}
+        strokeDasharray="5 5"
+        fill="none"
+      />
+      <Rect
+        x={58}
+        y={64}
+        width={110}
+        height={70}
+        rx={10}
+        fill="#fff"
+        stroke={GREEN}
+        strokeWidth={3}
+      />
+      <Path
+        d="M58 72 L113 108 L168 72"
+        stroke={GREEN}
+        strokeWidth={3}
+        fill="none"
+        strokeLinejoin="round"
+      />
       <Path d="M58 128 L96 96 M168 128 L130 96" stroke="#9CC9B8" strokeWidth={2} />
     </Svg>
   );
@@ -64,10 +85,20 @@ export function ShieldIllustration({ width = 200 }: { width?: number }) {
       <Circle cx={170} cy={28} r={3} fill="#9CC9B8" />
       <Circle cx={176} cy={110} r={6} fill={LEAF} />
       <Ellipse cx={100} cy={128} rx={56} ry={10} fill={SOFT} />
-      <Path d="M100 16 L150 34 V72 C150 100 128 120 100 130 C72 120 50 100 50 72 V34 Z" fill={GREEN} />
+      <Path
+        d="M100 16 L150 34 V72 C150 100 128 120 100 130 C72 120 50 100 50 72 V34 Z"
+        fill={GREEN}
+      />
       <Path d="M100 26 L140 40 V72 C140 94 123 111 100 120 Z" fill="#1B7A63" />
       <Circle cx={100} cy={74} r={22} fill="#fff" />
-      <Path d="M89 74 L97 82 L112 66" stroke={GREEN} strokeWidth={5} fill="none" strokeLinecap="round" strokeLinejoin="round" />
+      <Path
+        d="M89 74 L97 82 L112 66"
+        stroke={GREEN}
+        strokeWidth={5}
+        fill="none"
+        strokeLinecap="round"
+        strokeLinejoin="round"
+      />
     </Svg>
   );
 }
@@ -75,7 +106,12 @@ export function ShieldIllustration({ width = 200 }: { width?: number }) {
 // Lá trang trí góc dưới bên phải của các màn hình xác thực.
 export function LeafDecor() {
   return (
-    <Svg width={120} height={120} viewBox="0 0 120 120" style={{ position: 'absolute', right: 0, bottom: 0 }}>
+    <Svg
+      width={120}
+      height={120}
+      viewBox="0 0 120 120"
+      style={{ position: 'absolute', right: 0, bottom: 0 }}
+    >
       <Path d="M120 120 C60 120 30 80 40 30 C80 40 120 70 120 120 Z" fill="#E3F1EC" />
       <Path d="M120 120 C95 90 75 70 50 45" stroke="#C3E2D3" strokeWidth={3} fill="none" />
       <Path d="M120 120 C80 118 60 100 56 70 C90 76 112 96 120 120 Z" fill="#CFE8DC" />

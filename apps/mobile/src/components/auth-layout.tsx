@@ -1,6 +1,14 @@
 import { useRouter, type Href } from 'expo-router';
 import { useState, type ReactNode } from 'react';
-import { KeyboardAvoidingView, Platform, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
+import {
+  KeyboardAvoidingView,
+  Platform,
+  Pressable,
+  ScrollView,
+  StyleSheet,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import { LeafDecor } from '@/components/illustrations';
 import { ScreenHeader } from '@/components/screen-header';
@@ -21,11 +29,17 @@ interface Props {
 export function AuthLayout({ title, subtitle, illustration, centered, children, footer }: Props) {
   const insets = useSafeAreaInsets();
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <LeafDecor />
       <ScrollView
         keyboardShouldPersistTaps="handled"
-        contentContainerStyle={[styles.content, { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 }]}
+        contentContainerStyle={[
+          styles.content,
+          { paddingTop: insets.top + 8, paddingBottom: insets.bottom + 24 },
+        ]}
       >
         <ScreenHeader />
         {illustration ? <View style={styles.illustration}>{illustration}</View> : null}

@@ -5,7 +5,9 @@ const node = (tags: Record<string, string>, lat = 10.77, lon = 106.7) =>
 
 describe('toPlaceSeed', () => {
   it('chuyển node hợp lệ, bỏ dấu cho searchName', () => {
-    const seed = toPlaceSeed(node({ name: 'Cộng Cà Phê', 'addr:housenumber': '26', 'addr:street': 'Lý Tự Trọng' }));
+    const seed = toPlaceSeed(
+      node({ name: 'Cộng Cà Phê', 'addr:housenumber': '26', 'addr:street': 'Lý Tự Trọng' }),
+    );
     expect(seed).toMatchObject({
       osmId: 'node/1',
       name: 'Cộng Cà Phê',
@@ -15,7 +17,12 @@ describe('toPlaceSeed', () => {
   });
 
   it('lấy toạ độ từ center với way', () => {
-    const seed = toPlaceSeed({ type: 'way', id: 9, center: { lat: 10.8, lon: 106.7 }, tags: { name: 'Quán A' } });
+    const seed = toPlaceSeed({
+      type: 'way',
+      id: 9,
+      center: { lat: 10.8, lon: 106.7 },
+      tags: { name: 'Quán A' },
+    });
     expect(seed).toMatchObject({ osmId: 'way/9', lat: 10.8, lng: 106.7 });
   });
 

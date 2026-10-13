@@ -4,5 +4,9 @@ import { MyPlacesController } from './my-places.controller.js';
 import { PlacesController } from './places.controller.js';
 import { PlacesService } from './places.service.js';
 
-@Module({ controllers: [PlacesController, MyPlacesController, FavoritesController], providers: [PlacesService], exports: [PlacesService] })
+@Module({
+  controllers: [PlacesController, MyPlacesController, FavoritesController],
+  providers: [PlacesService],
+  exports: [PlacesService],
+})
 export class PlacesModule {}

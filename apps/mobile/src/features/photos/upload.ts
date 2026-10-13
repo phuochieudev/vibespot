@@ -27,7 +27,11 @@ export async function uploadImage(uri: string): Promise<UploadedImage> {
     method: 'POST',
     body: form,
   });
-  const body = (await res.json()) as { secure_url?: string; public_id?: string; error?: { message?: string } };
+  const body = (await res.json()) as {
+    secure_url?: string;
+    public_id?: string;
+    error?: { message?: string };
+  };
   if (!res.ok || !body.secure_url || !body.public_id) {
     throw new Error(body.error?.message ?? 'Không tải ảnh lên được');
   }

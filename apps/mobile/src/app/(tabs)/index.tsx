@@ -142,7 +142,11 @@ export default function MapScreen() {
         <Pressable accessibilityLabel="Vị trí của tôi" onPress={locate} style={styles.round}>
           <Ionicons name="locate" size={22} color={colors.text} />
         </Pressable>
-        <Pressable accessibilityLabel="Lớp bản đồ" onPress={() => comingSoon('Chọn lớp bản đồ')} style={styles.round}>
+        <Pressable
+          accessibilityLabel="Lớp bản đồ"
+          onPress={() => comingSoon('Chọn lớp bản đồ')}
+          style={styles.round}
+        >
           <Ionicons name="layers-outline" size={22} color={colors.text} />
         </Pressable>
       </View>
@@ -160,7 +164,12 @@ export default function MapScreen() {
         )}
       </View>
 
-      <Modal visible={filterOpen} transparent animationType="slide" onRequestClose={() => setFilterOpen(false)}>
+      <Modal
+        visible={filterOpen}
+        transparent
+        animationType="slide"
+        onRequestClose={() => setFilterOpen(false)}
+      >
         <Pressable style={styles.backdrop} onPress={() => setFilterOpen(false)} />
         <View style={[styles.sheet, { paddingBottom: insets.bottom + 16 }]}>
           <Text style={styles.sheetTitle}>Bộ lọc</Text>

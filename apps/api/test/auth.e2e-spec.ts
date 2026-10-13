@@ -67,7 +67,10 @@ describe('Auth (e2e)', () => {
   it('GET /me cần token', async () => {
     await http().get('/api/me').expect(401);
     await http().get('/api/me').set('Authorization', 'Bearer rac').expect(401);
-    const res = await http().get('/api/me').set('Authorization', `Bearer ${accessToken}`).expect(200);
+    const res = await http()
+      .get('/api/me')
+      .set('Authorization', `Bearer ${accessToken}`)
+      .expect(200);
     expect(res.body.email).toBe(email);
   });
 
@@ -97,7 +100,10 @@ describe('Auth (e2e)', () => {
 
   it('logout thu hồi refresh token', async () => {
     const login = await http().post('/api/auth/login').send({ email, password }).expect(200);
-    await http().post('/api/auth/logout').send({ refreshToken: login.body.refreshToken }).expect(204);
+    await http()
+      .post('/api/auth/logout')
+      .send({ refreshToken: login.body.refreshToken })
+      .expect(204);
     await http()
       .post('/api/auth/refresh')
       .send({ refreshToken: login.body.refreshToken })

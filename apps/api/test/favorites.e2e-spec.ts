@@ -26,18 +26,23 @@ describe('Favorites, stats and cover photo (e2e)', () => {
     prisma = app.get(PrismaService);
 
     for (const email of emails) {
-      const res = await http().post('/api/auth/register').send({ email, password: 'matkhau-manh-123', displayName: 'Người lưu' });
+      const res = await http()
+        .post('/api/auth/register')
+        .send({ email, password: 'matkhau-manh-123', displayName: 'Người lưu' });
       tokens.push(res.body.accessToken);
       if (!userId) userId = res.body.user.id;
     }
-    const created = await http().post('/api/places').set(as(0)).send({
-      name: `Quán yêu thích ${token}`,
-      address: '4 Pasteur, Quận 1',
-      lat: 10.7762,
-      lng: 106.6992,
-      category: 'CAFE',
-      attributes: {},
-    });
+    const created = await http()
+      .post('/api/places')
+      .set(as(0))
+      .send({
+        name: `Quán yêu thích ${token}`,
+        address: '4 Pasteur, Quận 1',
+        lat: 10.7762,
+        lng: 106.6992,
+        category: 'CAFE',
+        attributes: {},
+      });
     placeId = created.body.id;
   });
 
@@ -47,7 +52,8 @@ describe('Favorites, stats and cover photo (e2e)', () => {
     await app.close();
   });
 
-  const favorites = async (i: number) => (await http().get('/api/me/favorites').set(as(i)).expect(200)).body;
+  const favorites = async (i: number) =>
+    (await http().get('/api/me/favorites').set(as(i)).expect(200)).body;
 
   it('cần đăng nhập, và không lưu được quán chưa duyệt (404)', async () => {
     await http().get('/api/me/favorites').expect(401);
@@ -78,7 +84,11 @@ describe('Favorites, stats and cover photo (e2e)', () => {
     });
 
     it('thống kê hồ sơ đếm đúng đánh giá, quán đã lưu và quán đã đóng góp', async () => {
-      await http().post(`/api/places/${placeId}/reviews`).set(as(0)).send({ rating: 4 }).expect(200);
+      await http()
+        .post(`/api/places/${placeId}/reviews`)
+        .set(as(0))
+        .send({ rating: 4 })
+        .expect(200);
       const stats = await http().get('/api/me/stats').set(as(0)).expect(200);
       expect(stats.body).toEqual({ reviewCount: 1, favoriteCount: 1, placeCount: 1 });
       const other = await http().get('/api/me/stats').set(as(1)).expect(200);

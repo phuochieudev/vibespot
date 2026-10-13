@@ -10,7 +10,13 @@ type IconName = keyof typeof Ionicons.glyphMap;
 const ITEMS: { label: string; icon: IconName; tint: string; bg: string; available: boolean }[] = [
   { label: 'Cà phê', icon: 'cafe', tint: colors.accent, bg: colors.accentSoft, available: true },
   { label: 'Ăn uống', icon: 'restaurant', tint: '#EA580C', bg: '#FFEDD5', available: false },
-  { label: 'Tiện ích', icon: 'flash', tint: colors.primary, bg: colors.primarySoft, available: false },
+  {
+    label: 'Tiện ích',
+    icon: 'flash',
+    tint: colors.primary,
+    bg: colors.primarySoft,
+    available: false,
+  },
   { label: 'Khác', icon: 'grid-outline', tint: colors.muted, bg: colors.surface, available: false },
 ];
 
@@ -43,6 +49,12 @@ const styles = StyleSheet.create({
     ...shadow,
   },
   item: { alignItems: 'center', gap: 6, flex: 1 },
-  icon: { width: 46, height: 46, borderRadius: radius.md, alignItems: 'center', justifyContent: 'center' },
+  icon: {
+    width: 46,
+    height: 46,
+    borderRadius: radius.md,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
   label: { fontSize: 12, fontWeight: '600', color: colors.text },
 });

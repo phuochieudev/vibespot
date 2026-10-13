@@ -19,7 +19,9 @@ describe('Admin moderation of places (e2e)', () => {
   let placeId: string;
   const as = (t: string) => ({ Authorization: `Bearer ${t}` });
   const nearbyIds = async () =>
-    (await http().get('/api/places/nearby?lat=10.7600&lng=106.6600&radius=300').expect(200)).body.map((p: { id: string }) => p.id);
+    (
+      await http().get('/api/places/nearby?lat=10.7600&lng=106.6600&radius=300').expect(200)
+    ).body.map((p: { id: string }) => p.id);
 
   beforeAll(async () => {
     const moduleRef = await Test.createTestingModule({ imports: [AppModule] }).compile();
@@ -34,14 +36,17 @@ describe('Admin moderation of places (e2e)', () => {
     adminToken = (await reg(adminEmail, 'Quản trị')).body.accessToken;
     await prisma.user.update({ where: { email: adminEmail }, data: { role: 'ADMIN' } });
 
-    const created = await http().post('/api/places').set(as(userToken)).send({
-      name: `Quán chờ duyệt ${token}`,
-      address: '3 Hậu Giang, Quận 6',
-      lat: 10.76,
-      lng: 106.66,
-      category: 'CAFE',
-      attributes: { hasWifi: true },
-    });
+    const created = await http()
+      .post('/api/places')
+      .set(as(userToken))
+      .send({
+        name: `Quán chờ duyệt ${token}`,
+        address: '3 Hậu Giang, Quận 6',
+        lat: 10.76,
+        lng: 106.66,
+        category: 'CAFE',
+        attributes: { hasWifi: true },
+      });
     placeId = created.body.id;
   });
 
@@ -58,7 +63,11 @@ describe('Admin moderation of places (e2e)', () => {
   it('khu vực admin: 401 khi chưa đăng nhập, 403 với người dùng thường', async () => {
     await http().get('/api/admin/places').expect(401);
     await http().get('/api/admin/places').set(as(userToken)).expect(403);
-    await http().patch(`/api/admin/places/${placeId}`).set(as(userToken)).send({ status: 'APPROVED' }).expect(403);
+    await http()
+      .patch(`/api/admin/places/${placeId}`)
+      .set(as(userToken))
+      .send({ status: 'APPROVED' })
+      .expect(403);
   });
 
   it('admin thấy quán trong hàng chờ', async () => {
@@ -68,19 +77,38 @@ describe('Admin moderation of places (e2e)', () => {
   });
 
   it('duyệt thì quán hiện công khai; từ chối thì ẩn đi', async () => {
-    await http().patch(`/api/admin/places/${placeId}`).set(as(adminToken)).send({ status: 'APPROVED' }).expect(200);
+    await http()
+      .patch(`/api/admin/places/${placeId}`)
+      .set(as(adminToken))
+      .send({ status: 'APPROVED' })
+      .expect(200);
     expect(await nearbyIds()).toContain(placeId);
 
-    await http().patch(`/api/admin/places/${placeId}`).set(as(adminToken)).send({ status: 'REJECTED' }).expect(200);
+    await http()
+      .patch(`/api/admin/places/${placeId}`)
+      .set(as(adminToken))
+      .send({ status: 'REJECTED' })
+      .expect(200);
     expect(await nearbyIds()).not.toContain(placeId);
-    const rejected = await http().get('/api/admin/places?status=REJECTED').set(as(adminToken)).expect(200);
+    const rejected = await http()
+      .get('/api/admin/places?status=REJECTED')
+      .set(as(adminToken))
+      .expect(200);
     expect(rejected.body.map((p: { id: string }) => p.id)).toContain(placeId);
   });
 
   it('kiểm tra dữ liệu: trạng thái lạ (400), trả về PENDING không cho phép (400), id không tồn tại (404)', async () => {
     await http().get('/api/admin/places?status=XYZ').set(as(adminToken)).expect(400);
-    await http().patch(`/api/admin/places/${placeId}`).set(as(adminToken)).send({ status: 'PENDING' }).expect(400);
-    await http().patch('/api/admin/places/00000000-0000-4000-8000-000000000000').set(as(adminToken)).send({ status: 'APPROVED' }).expect(404);
+    await http()
+      .patch(`/api/admin/places/${placeId}`)
+      .set(as(adminToken))
+      .send({ status: 'PENDING' })
+      .expect(400);
+    await http()
+      .patch('/api/admin/places/00000000-0000-4000-8000-000000000000')
+      .set(as(adminToken))
+      .send({ status: 'APPROVED' })
+      .expect(404);
   });
 
   it('gỡ quyền admin có hiệu lực ngay dù token vẫn còn hạn', async () => {

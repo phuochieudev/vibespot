@@ -13,7 +13,8 @@ interface Props {
 }
 
 export function Button({ label, onPress, loading, variant = 'primary', icon, disabled }: Props) {
-  const textColor = variant === 'primary' ? '#fff' : variant === 'outline' ? colors.text : colors.primary;
+  const textColor =
+    variant === 'primary' ? '#fff' : variant === 'outline' ? colors.text : colors.primary;
   return (
     <Pressable
       onPress={onPress}
@@ -33,7 +34,13 @@ export function Button({ label, onPress, loading, variant = 'primary', icon, dis
 }
 
 const styles = StyleSheet.create({
-  base: { height: 52, borderRadius: radius.pill, alignItems: 'center', justifyContent: 'center', paddingHorizontal: 20 },
+  base: {
+    height: 52,
+    borderRadius: radius.pill,
+    alignItems: 'center',
+    justifyContent: 'center',
+    paddingHorizontal: 20,
+  },
   primary: { backgroundColor: colors.primary },
   outline: { backgroundColor: colors.bg, borderWidth: 1, borderColor: colors.border },
   ghost: { backgroundColor: 'transparent', height: 44 },

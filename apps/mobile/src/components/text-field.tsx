@@ -28,8 +28,16 @@ export function TextField({ label, icon, secure, style, ...input }: Props) {
           {...input}
         />
         {secure ? (
-          <Pressable onPress={() => setHidden((h) => !h)} hitSlop={8} accessibilityLabel="Hiện hoặc ẩn mật khẩu">
-            <Ionicons name={hidden ? 'eye-outline' : 'eye-off-outline'} size={20} color={colors.muted} />
+          <Pressable
+            onPress={() => setHidden((h) => !h)}
+            hitSlop={8}
+            accessibilityLabel="Hiện hoặc ẩn mật khẩu"
+          >
+            <Ionicons
+              name={hidden ? 'eye-outline' : 'eye-off-outline'}
+              size={20}
+              color={colors.muted}
+            />
           </Pressable>
         ) : null}
       </View>

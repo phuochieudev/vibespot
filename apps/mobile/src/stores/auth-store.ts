@@ -56,7 +56,9 @@ export const useAuth = create<AuthState>((set) => {
       const refreshToken = await getRefreshToken();
       // Báo server thu hồi token; nếu lỗi mạng vẫn đăng xuất cục bộ.
       if (refreshToken) {
-        await api('/auth/logout', { method: 'POST', body: { refreshToken } }).catch(() => undefined);
+        await api('/auth/logout', { method: 'POST', body: { refreshToken } }).catch(
+          () => undefined,
+        );
       }
       await clearSession();
       set({ status: 'signedOut', user: null });

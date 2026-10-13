@@ -11,7 +11,17 @@ import { colors, radius, shadow } from '@/theme';
 
 type IconName = keyof typeof Ionicons.glyphMap;
 
-function MenuRow({ icon, label, onPress, last }: { icon: IconName; label: string; onPress: () => void; last?: boolean }) {
+function MenuRow({
+  icon,
+  label,
+  onPress,
+  last,
+}: {
+  icon: IconName;
+  label: string;
+  onPress: () => void;
+  last?: boolean;
+}) {
   return (
     <Pressable onPress={onPress} style={[styles.menuRow, !last && styles.menuDivider]}>
       <Ionicons name={icon} size={22} color={colors.text} />
@@ -69,7 +79,11 @@ export default function ProfileScreen() {
           </View>
 
           <View style={styles.menu}>
-            <MenuRow icon="time-outline" label="Lịch sử tìm kiếm" onPress={() => comingSoon('Lịch sử tìm kiếm')} />
+            <MenuRow
+              icon="time-outline"
+              label="Lịch sử tìm kiếm"
+              onPress={() => comingSoon('Lịch sử tìm kiếm')}
+            />
             <MenuRow icon="bookmark-outline" label="Địa điểm đã lưu" onPress={go('/saved')} />
             <MenuRow
               icon="add-circle-outline"
@@ -77,10 +91,22 @@ export default function ProfileScreen() {
               onPress={go('/my-places')}
             />
             {user.role === 'ADMIN' ? (
-              <MenuRow icon="shield-checkmark-outline" label="Duyệt nội dung (Quản trị)" onPress={go('/admin')} />
+              <MenuRow
+                icon="shield-checkmark-outline"
+                label="Duyệt nội dung (Quản trị)"
+                onPress={go('/admin')}
+              />
             ) : null}
-            <MenuRow icon="settings-outline" label="Cài đặt" onPress={() => comingSoon('Cài đặt')} />
-            <MenuRow icon="help-circle-outline" label="Trợ giúp" onPress={() => comingSoon('Trung tâm trợ giúp')} />
+            <MenuRow
+              icon="settings-outline"
+              label="Cài đặt"
+              onPress={() => comingSoon('Cài đặt')}
+            />
+            <MenuRow
+              icon="help-circle-outline"
+              label="Trợ giúp"
+              onPress={() => comingSoon('Trung tâm trợ giúp')}
+            />
             <MenuRow icon="log-out-outline" label="Đăng xuất" onPress={logout} last />
           </View>
         </>
@@ -90,7 +116,9 @@ export default function ProfileScreen() {
             <Ionicons name="person" size={44} color={colors.primary} />
           </View>
           <Text style={styles.name}>Chưa đăng nhập</Text>
-          <Text style={[styles.email, styles.center]}>Đăng nhập để đóng góp quán, đánh giá và lưu địa điểm yêu thích.</Text>
+          <Text style={[styles.email, styles.center]}>
+            Đăng nhập để đóng góp quán, đánh giá và lưu địa điểm yêu thích.
+          </Text>
           <View style={styles.guestActions}>
             <Button label="Đăng nhập" onPress={go('/login')} />
             <Button label="Tạo tài khoản" variant="outline" onPress={go('/register')} />
@@ -135,7 +163,13 @@ const styles = StyleSheet.create({
   statLabel: { fontSize: 13, color: colors.muted },
   statDivider: { width: 1, backgroundColor: colors.border, marginVertical: 4 },
   menu: { backgroundColor: colors.bg, borderRadius: radius.lg, ...shadow, shadowOpacity: 0.07 },
-  menuRow: { flexDirection: 'row', alignItems: 'center', gap: 14, paddingHorizontal: 16, paddingVertical: 16 },
+  menuRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 14,
+    paddingHorizontal: 16,
+    paddingVertical: 16,
+  },
   menuDivider: { borderBottomWidth: 1, borderBottomColor: colors.border },
   menuLabel: { flex: 1, fontSize: 16, color: colors.text },
   guest: { alignItems: 'center', gap: 8, marginTop: 24 },

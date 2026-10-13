@@ -26,7 +26,9 @@ const FALLBACK_ADDRESS = 'Thành phố Hồ Chí Minh';
 export function buildAddress(tags: Record<string, string>): string {
   if (tags['addr:full']) return tags['addr:full'];
   const street = [tags['addr:housenumber'], tags['addr:street']].filter(Boolean).join(' ');
-  const parts = [street, tags['addr:suburb'], tags['addr:district'], tags['addr:city']].filter(Boolean);
+  const parts = [street, tags['addr:suburb'], tags['addr:district'], tags['addr:city']].filter(
+    Boolean,
+  );
   return parts.length > 0 ? parts.join(', ') : FALLBACK_ADDRESS;
 }
 

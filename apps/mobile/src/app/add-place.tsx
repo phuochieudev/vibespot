@@ -1,4 +1,9 @@
-import { DEFAULT_CENTER, createPlaceSchema, isInServiceArea, type CafeAttributes } from '@vibespot/shared';
+import {
+  DEFAULT_CENTER,
+  createPlaceSchema,
+  isInServiceArea,
+  type CafeAttributes,
+} from '@vibespot/shared';
 import { useRouter } from 'expo-router';
 import { useState } from 'react';
 import { KeyboardAvoidingView, Platform, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -71,8 +76,8 @@ export default function AddPlaceScreen() {
         <ScreenHeader />
         <Text style={styles.title}>Cảm ơn bạn!</Text>
         <Text style={styles.muted}>
-          Quán "{create.data.name}" đã được gửi và sẽ xuất hiện trên bản đồ sau khi được duyệt. Bạn xem
-          trạng thái ở tab Tôi, mục "Đóng góp của tôi".
+          Quán "{create.data.name}" đã được gửi và sẽ xuất hiện trên bản đồ sau khi được duyệt. Bạn
+          xem trạng thái ở tab Tôi, mục "Đóng góp của tôi".
         </Text>
         <Button label="Xong" onPress={() => router.back()} />
       </View>
@@ -101,7 +106,10 @@ export default function AddPlaceScreen() {
     setFlags((cur) => (cur.includes(f) ? cur.filter((x) => x !== f) : [...cur, f]));
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView
         keyboardShouldPersistTaps="handled"
         contentContainerStyle={[styles.content, { paddingTop: insets.top + 8 }]}
@@ -109,8 +117,18 @@ export default function AddPlaceScreen() {
         <ScreenHeader title="Thêm quán" />
 
         <TextField label="Tên quán" value={name} onChangeText={setName} autoCapitalize="words" />
-        <TextField label="Địa chỉ" value={address} onChangeText={setAddress} placeholder="Số nhà, đường, phường" />
-        <TextField label="Quận / huyện (không bắt buộc)" value={district} onChangeText={setDistrict} autoCapitalize="words" />
+        <TextField
+          label="Địa chỉ"
+          value={address}
+          onChangeText={setAddress}
+          placeholder="Số nhà, đường, phường"
+        />
+        <TextField
+          label="Quận / huyện (không bắt buộc)"
+          value={district}
+          onChangeText={setDistrict}
+          autoCapitalize="words"
+        />
 
         <Text style={styles.label}>Vị trí quán</Text>
         <ChipSelect

@@ -11,7 +11,9 @@ if (!email) {
   process.exit(1);
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 try {
   const user = await prisma.user.findUnique({ where: { email }, select: { id: true } });
   if (!user) throw new Error(`Không có người dùng ${email}`);

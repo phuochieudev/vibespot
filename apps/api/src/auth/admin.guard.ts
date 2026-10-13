@@ -1,4 +1,11 @@
-import { CanActivate, ExecutionContext, ForbiddenException, Inject, Injectable, UnauthorizedException } from '@nestjs/common';
+import {
+  CanActivate,
+  ExecutionContext,
+  ForbiddenException,
+  Inject,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 import { PrismaService } from '../prisma/prisma.service.js';
 import type { AuthedRequest } from './auth.types.js';
 
@@ -12,7 +19,10 @@ export class AdminGuard implements CanActivate {
   async canActivate(context: ExecutionContext): Promise<boolean> {
     const userId = context.switchToHttp().getRequest<AuthedRequest>().user?.id;
     if (!userId) throw new UnauthorizedException();
-    const user = await this.prisma.user.findUnique({ where: { id: userId }, select: { role: true } });
+    const user = await this.prisma.user.findUnique({
+      where: { id: userId },
+      select: { role: true },
+    });
     if (user?.role !== 'ADMIN') throw new ForbiddenException('Cần quyền quản trị');
     return true;
   }

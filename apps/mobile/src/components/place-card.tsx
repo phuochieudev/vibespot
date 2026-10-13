@@ -28,7 +28,11 @@ export function PlaceCard({
   return (
     <Pressable onPress={onPress} style={styles.card}>
       {place.coverUrl ? (
-        <Image source={{ uri: thumb(place.coverUrl, 200, 200) }} style={styles.photo} contentFit="cover" />
+        <Image
+          source={{ uri: thumb(place.coverUrl, 200, 200) }}
+          style={styles.photo}
+          contentFit="cover"
+        />
       ) : (
         <View style={[styles.photo, styles.placeholder]}>
           <Ionicons name="cafe" size={30} color={colors.primary} />
@@ -53,7 +57,9 @@ export function PlaceCard({
           <Text style={styles.address} numberOfLines={1}>
             {place.address}
           </Text>
-          {distance !== undefined ? <Text style={styles.distance}>{formatDistance(distance)}</Text> : null}
+          {distance !== undefined ? (
+            <Text style={styles.distance}>{formatDistance(distance)}</Text>
+          ) : null}
         </View>
 
         <View style={styles.tag}>
@@ -78,7 +84,11 @@ const styles = StyleSheet.create({
     shadowOpacity: 0.07,
   },
   photo: { width: 84, height: 84, borderRadius: radius.md, backgroundColor: colors.surface },
-  placeholder: { alignItems: 'center', justifyContent: 'center', backgroundColor: colors.primarySoft },
+  placeholder: {
+    alignItems: 'center',
+    justifyContent: 'center',
+    backgroundColor: colors.primarySoft,
+  },
   body: { flex: 1, gap: 4 },
   row: { flexDirection: 'row', alignItems: 'center', gap: 4 },
   name: { flex: 1, fontSize: 16, fontWeight: '700', color: colors.text },
@@ -86,6 +96,12 @@ const styles = StyleSheet.create({
   ratingText: { fontSize: 13, fontWeight: '700', color: colors.text },
   address: { flex: 1, fontSize: 12.5, color: colors.muted },
   distance: { fontSize: 12.5, color: colors.muted },
-  tag: { flexDirection: 'row', alignItems: 'center', gap: 4, alignSelf: 'flex-start', marginTop: 2 },
+  tag: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: 4,
+    alignSelf: 'flex-start',
+    marginTop: 2,
+  },
   tagText: { fontSize: 12, fontWeight: '600', color: colors.primary },
 });

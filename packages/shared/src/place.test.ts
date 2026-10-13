@@ -1,7 +1,12 @@
 import { describe, expect, it } from 'vitest';
 import { createPlaceSchema, nearbyQuerySchema, registerSchema } from './index';
 
-const base = { name: 'Cộng Cà Phê', address: '26 Lý Tự Trọng, Quận 1', lat: 10.7769, lng: 106.7009 };
+const base = {
+  name: 'Cộng Cà Phê',
+  address: '26 Lý Tự Trọng, Quận 1',
+  lat: 10.7769,
+  lng: 106.7009,
+};
 
 describe('createPlaceSchema', () => {
   it('chấp nhận quán cà phê với thuộc tính hợp lệ', () => {

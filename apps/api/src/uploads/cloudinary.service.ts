@@ -13,7 +13,9 @@ export function signParams(params: Record<string, string | number>, apiSecret: s
     .sort()
     .map((k) => `${k}=${params[k]}`)
     .join('&');
-  return createHash('sha1').update(toSign + apiSecret).digest('hex');
+  return createHash('sha1')
+    .update(toSign + apiSecret)
+    .digest('hex');
 }
 
 @Injectable()

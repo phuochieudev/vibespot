@@ -63,7 +63,10 @@ export async function api<T>(path: string, opts: Options = {}): Promise<T> {
   if (res.status === 401 && opts.auth) {
     // Nếu request khác đã làm mới token trong lúc ta chờ thì chỉ cần dùng token mới, khỏi refresh nữa.
     const current = getAccessToken();
-    const next = current && current !== token ? current : (await refreshSession().catch(() => null))?.accessToken;
+    const next =
+      current && current !== token
+        ? current
+        : (await refreshSession().catch(() => null))?.accessToken;
     if (next) {
       try {
         res = await send(path, opts, next);

@@ -35,7 +35,9 @@ export default function SavedScreen() {
         ListEmptyComponent={
           isLoading ? null : (
             <Text style={styles.empty}>
-              {user ? 'Bạn chưa lưu quán nào. Bấm biểu tượng trái tim ở trang chi tiết quán để lưu.' : 'Đăng nhập để xem quán đã lưu.'}
+              {user
+                ? 'Bạn chưa lưu quán nào. Bấm biểu tượng trái tim ở trang chi tiết quán để lưu.'
+                : 'Đăng nhập để xem quán đã lưu.'}
             </Text>
           )
         }

@@ -17,7 +17,11 @@ export function StarRating({
     <View style={styles.row}>
       {[1, 2, 3, 4, 5].map((n) => {
         const icon = (
-          <Ionicons name={n <= Math.round(value) ? 'star' : 'star-outline'} size={size} color={GOLD} />
+          <Ionicons
+            name={n <= Math.round(value) ? 'star' : 'star-outline'}
+            size={size}
+            color={GOLD}
+          />
         );
         return onChange ? (
           <Pressable key={n} onPress={() => onChange(n)} hitSlop={6}>

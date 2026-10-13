@@ -40,7 +40,10 @@ beforeEach(() => {
         return new Response(JSON.stringify(signature), { status: 200 });
       }
       return new Response(
-        JSON.stringify({ secure_url: 'https://res.cloudinary.com/demo/image/upload/v1/vibespot/places/a.jpg', public_id: 'vibespot/places/a' }),
+        JSON.stringify({
+          secure_url: 'https://res.cloudinary.com/demo/image/upload/v1/vibespot/places/a.jpg',
+          public_id: 'vibespot/places/a',
+        }),
         { status: 200 },
       );
     }),
@@ -78,7 +81,9 @@ describe('uploadImage', () => {
       vi.fn(async (url: string) =>
         url.includes('/uploads/signature')
           ? new Response(JSON.stringify(signature), { status: 200 })
-          : new Response(JSON.stringify({ error: { message: 'Invalid Signature' } }), { status: 401 }),
+          : new Response(JSON.stringify({ error: { message: 'Invalid Signature' } }), {
+              status: 401,
+            }),
       ),
     );
     const { uploadImage } = await import('./upload');

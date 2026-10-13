@@ -13,7 +13,14 @@ const REFRESH_KEY = 'vibespot.refreshToken';
 const json = (status: number, body: unknown) =>
   new Response(JSON.stringify(body), { status, headers: { 'Content-Type': 'application/json' } });
 
-const user = { id: 'u1', email: 'a@b.c', displayName: 'A', avatarUrl: null, role: 'USER', reputation: 0 };
+const user = {
+  id: 'u1',
+  email: 'a@b.c',
+  displayName: 'A',
+  avatarUrl: null,
+  role: 'USER',
+  reputation: 0,
+};
 
 interface Server {
   refreshCalls: number;
@@ -34,7 +41,8 @@ function installFetch() {
         return json(200, { user, accessToken: 'new', refreshToken: 'r2' });
       }
       const auth = (init?.headers as Record<string, string> | undefined)?.Authorization;
-      if (url.includes('/me')) return auth === 'Bearer new' ? json(200, { ok: true }) : json(401, { message: 'x' });
+      if (url.includes('/me'))
+        return auth === 'Bearer new' ? json(200, { ok: true }) : json(401, { message: 'x' });
       if (url.includes('/nocontent')) return new Response(null, { status: 204 });
       return json(200, { auth: auth ?? null });
     }),
@@ -123,7 +131,13 @@ describe('api', () => {
 
   it('lỗi mạng khi gọi API trả ApiError status 0 với thông báo tiếng Việt', async () => {
     const { api } = await load();
-    vi.stubGlobal('fetch', vi.fn(async () => Promise.reject(new TypeError('offline'))));
-    await expect(api('/x')).rejects.toMatchObject({ status: 0, message: 'Không kết nối được máy chủ' });
+    vi.stubGlobal(
+      'fetch',
+      vi.fn(async () => Promise.reject(new TypeError('offline'))),
+    );
+    await expect(api('/x')).rejects.toMatchObject({
+      status: 0,
+      message: 'Không kết nối được máy chủ',
+    });
   });
 });

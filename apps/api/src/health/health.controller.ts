@@ -16,7 +16,9 @@ export class HealthController {
   @Get('db')
   @ApiOkResponse({ description: 'Database reachable, PostGIS enabled' })
   async checkDb() {
-    const rows = await this.prisma.$queryRaw<{ postgis: string }[]>`SELECT postgis_version() AS postgis`;
+    const rows = await this.prisma.$queryRaw<
+      { postgis: string }[]
+    >`SELECT postgis_version() AS postgis`;
     return { status: 'ok', postgis: rows[0]?.postgis };
   }
 }

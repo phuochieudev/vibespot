@@ -97,11 +97,17 @@ describe('Places (e2e)', () => {
   });
 
   it('chặn tạo trùng (cùng tên, cách nhau < 50m) bằng 409', async () => {
-    await http().post('/api/places').set(auth()).send({ ...place, lat: 10.77695 }).expect(409);
+    await http()
+      .post('/api/places')
+      .set(auth())
+      .send({ ...place, lat: 10.77695 })
+      .expect(409);
   });
 
   it('địa điểm chờ duyệt không hiện ở nearby, search và chi tiết', async () => {
-    const near = await http().get('/api/places/nearby?lat=10.7769&lng=106.7009&radius=500').expect(200);
+    const near = await http()
+      .get('/api/places/nearby?lat=10.7769&lng=106.7009&radius=500')
+      .expect(200);
     expect(near.body.find((p: { id: string }) => p.id === placeId)).toBeUndefined();
     const found = await http().get(`/api/places/search?q=${token}`).expect(200);
     expect(found.body).toHaveLength(0);
@@ -125,7 +131,9 @@ describe('Places (e2e)', () => {
     });
 
     it('nearby ngoài bán kính thì không trả về', async () => {
-      const res = await http().get('/api/places/nearby?lat=10.80&lng=106.7009&radius=500').expect(200);
+      const res = await http()
+        .get('/api/places/nearby?lat=10.80&lng=106.7009&radius=500')
+        .expect(200);
       expect(res.body.find((p: { id: string }) => p.id === placeId)).toBeUndefined();
     });
 
@@ -168,22 +176,30 @@ describe('Places (e2e)', () => {
     });
 
     it('search tìm được khi gõ không dấu và sai hoa thường', async () => {
-      const res = await http().get(`/api/places/search?q=${encodeURIComponent(`CA PHE ${token}`)}`).expect(200);
+      const res = await http()
+        .get(`/api/places/search?q=${encodeURIComponent(`CA PHE ${token}`)}`)
+        .expect(200);
       expect(res.body.map((p: { id: string }) => p.id)).toContain(placeId);
     });
 
     it('search có dấu tiếng Việt cũng ra', async () => {
-      const res = await http().get(`/api/places/search?q=${encodeURIComponent(`Cà Phê ${token}`)}`).expect(200);
+      const res = await http()
+        .get(`/api/places/search?q=${encodeURIComponent(`Cà Phê ${token}`)}`)
+        .expect(200);
       expect(res.body.map((p: { id: string }) => p.id)).toContain(placeId);
     });
 
     it('search kèm vị trí thì có khoảng cách', async () => {
-      const res = await http().get(`/api/places/search?q=${token}&lat=10.7779&lng=106.7009`).expect(200);
+      const res = await http()
+        .get(`/api/places/search?q=${token}&lat=10.7779&lng=106.7009`)
+        .expect(200);
       expect(res.body[0].distanceMeters).toBeGreaterThan(0);
     });
 
     it('search không bị lỗi khi có ký tự đặc biệt của LIKE', async () => {
-      await http().get(`/api/places/search?q=${encodeURIComponent('100%_\\')}`).expect(200);
+      await http()
+        .get(`/api/places/search?q=${encodeURIComponent('100%_\\')}`)
+        .expect(200);
     });
 
     it('GET /places/:id trả về chi tiết', async () => {

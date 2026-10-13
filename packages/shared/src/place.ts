@@ -1,5 +1,9 @@
 import { z } from 'zod';
-import { cafeAttributesSchema, evChargingAttributesSchema, parkingAttributesSchema } from './attributes';
+import {
+  cafeAttributesSchema,
+  evChargingAttributesSchema,
+  parkingAttributesSchema,
+} from './attributes';
 import { PlaceCategory, PlaceSource, PlaceStatus } from './enums';
 
 // Chỉ chặn toạ độ không hợp lệ; giới hạn theo khu vực (TP.HCM) sẽ xử lý ở API.
@@ -7,7 +11,11 @@ export const latSchema = z.number().min(-90).max(90);
 export const lngSchema = z.number().min(-180).max(180);
 
 const placeBase = {
-  name: z.string().trim().min(2, 'Tên quán tối thiểu 2 ký tự').max(120, 'Tên quán tối đa 120 ký tự'),
+  name: z
+    .string()
+    .trim()
+    .min(2, 'Tên quán tối thiểu 2 ký tự')
+    .max(120, 'Tên quán tối đa 120 ký tự'),
   address: z.string().trim().min(3, 'Vui lòng nhập địa chỉ').max(240, 'Địa chỉ tối đa 240 ký tự'),
   district: z.string().trim().max(80).optional(),
   lat: latSchema,

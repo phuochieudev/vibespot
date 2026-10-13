@@ -82,7 +82,11 @@ export default function PlaceDetailScreen() {
       <View style={[styles.errorBox, { paddingTop: insets.top + 60 }]}>
         <Text style={styles.muted}>Không tải được thông tin quán.</Text>
         {/* Chi tiết lỗi giúp tìm nguyên nhân khi phát triển; bản phát hành sẽ không hiện. */}
-        {__DEV__ ? <Text style={styles.debug}>{error instanceof Error ? error.message : 'dữ liệu rỗng'}</Text> : null}
+        {__DEV__ ? (
+          <Text style={styles.debug}>
+            {error instanceof Error ? error.message : 'dữ liệu rỗng'}
+          </Text>
+        ) : null}
         <Button label="Quay lại" variant="outline" onPress={() => router.back()} />
       </View>
     );
@@ -91,7 +95,8 @@ export default function PlaceDetailScreen() {
   const saved = favorites.data?.some((p) => p.id === place.id) ?? false;
   const distance = distanceFrom(me, place);
   const tags = describeAttributes(place.attributes);
-  const heroImages = photos.length > 0 ? photos.map((p) => p.url) : place.coverUrl ? [place.coverUrl] : [];
+  const heroImages =
+    photos.length > 0 ? photos.map((p) => p.url) : place.coverUrl ? [place.coverUrl] : [];
 
   function onHeart() {
     if (!user) return router.push('/login');
@@ -99,7 +104,10 @@ export default function PlaceDetailScreen() {
   }
 
   return (
-    <KeyboardAvoidingView style={styles.flex} behavior={Platform.OS === 'ios' ? 'padding' : undefined}>
+    <KeyboardAvoidingView
+      style={styles.flex}
+      behavior={Platform.OS === 'ios' ? 'padding' : undefined}
+    >
       <ScrollView contentContainerStyle={styles.scroll} keyboardShouldPersistTaps="handled">
         <View style={{ height: 280 }}>
           {heroImages.length > 0 ? (
@@ -109,9 +117,15 @@ export default function PlaceDetailScreen() {
               data={heroImages}
               keyExtractor={(u) => u}
               showsHorizontalScrollIndicator={false}
-              onMomentumScrollEnd={(e) => setHeroIndex(Math.round(e.nativeEvent.contentOffset.x / width))}
+              onMomentumScrollEnd={(e) =>
+                setHeroIndex(Math.round(e.nativeEvent.contentOffset.x / width))
+              }
               renderItem={({ item }) => (
-                <Image source={{ uri: thumb(item, 900, 600) }} style={{ width, height: 280 }} contentFit="cover" />
+                <Image
+                  source={{ uri: thumb(item, 900, 600) }}
+                  style={{ width, height: 280 }}
+                  contentFit="cover"
+                />
               )}
             />
           ) : (
@@ -129,8 +143,16 @@ export default function PlaceDetailScreen() {
               <Ionicons name="arrow-back" size={22} color={colors.text} />
             </Pressable>
             <View style={styles.heroRight}>
-              <Pressable accessibilityLabel={saved ? 'Bỏ lưu' : 'Lưu quán'} style={styles.heroBtn} onPress={onHeart}>
-                <Ionicons name={saved ? 'heart' : 'heart-outline'} size={22} color={saved ? '#E11D48' : colors.text} />
+              <Pressable
+                accessibilityLabel={saved ? 'Bỏ lưu' : 'Lưu quán'}
+                style={styles.heroBtn}
+                onPress={onHeart}
+              >
+                <Ionicons
+                  name={saved ? 'heart' : 'heart-outline'}
+                  size={22}
+                  color={saved ? '#E11D48' : colors.text}
+                />
               </Pressable>
               <Pressable
                 accessibilityLabel="Chia sẻ"
@@ -154,7 +176,9 @@ export default function PlaceDetailScreen() {
 
           <View style={styles.row}>
             <Ionicons name="star" size={16} color={colors.star} />
-            <Text style={styles.ratingNum}>{place.reviewCount > 0 ? place.avgRating.toFixed(1) : '–'}</Text>
+            <Text style={styles.ratingNum}>
+              {place.reviewCount > 0 ? place.avgRating.toFixed(1) : '–'}
+            </Text>
             <Text style={styles.muted}>
               {place.reviewCount > 0 ? `(${place.reviewCount} đánh giá)` : 'Chưa có đánh giá'}
             </Text>
@@ -190,7 +214,9 @@ export default function PlaceDetailScreen() {
             ))}
           </View>
           {tags.length === 0 ? (
-            <Text style={styles.muted}>Chưa có thông tin về wifi, ổ cắm. Hãy là người đầu tiên đánh giá!</Text>
+            <Text style={styles.muted}>
+              Chưa có thông tin về wifi, ổ cắm. Hãy là người đầu tiên đánh giá!
+            </Text>
           ) : null}
 
           <View style={styles.miniMap} pointerEvents="none">
@@ -235,13 +261,19 @@ function PhotoSection({ placeId, photoCount }: { placeId: string; photoCount: nu
     setError(null);
     setNotice(null);
     // exif: false = không đọc kèm metadata (vd. toạ độ GPS) của ảnh.
-    const result = await ImagePicker.launchImageLibraryAsync({ mediaTypes: ['images'], quality: 0.7, exif: false });
+    const result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ['images'],
+      quality: 0.7,
+      exif: false,
+    });
     const uri = result.assets?.[0]?.uri;
     if (result.canceled || !uri) return;
     add.mutate(uri, {
       // Ảnh của người dùng thường phải chờ admin duyệt nên chưa hiện ngay; báo rõ để họ khỏi tưởng ảnh bị mất.
       onSuccess: (p) =>
-        setNotice(p.status === 'PENDING' ? 'Đã gửi ảnh. Ảnh sẽ hiện sau khi quản trị viên duyệt.' : null),
+        setNotice(
+          p.status === 'PENDING' ? 'Đã gửi ảnh. Ảnh sẽ hiện sau khi quản trị viên duyệt.' : null,
+        ),
       onError: (e) => setError(e.message),
     });
   }
@@ -256,7 +288,11 @@ function PhotoSection({ placeId, photoCount }: { placeId: string; photoCount: nu
           showsHorizontalScrollIndicator={false}
           contentContainerStyle={styles.photoList}
           renderItem={({ item }) => (
-            <Image source={{ uri: thumb(item.url, 400, 300) }} style={styles.photo} contentFit="cover" />
+            <Image
+              source={{ uri: thumb(item.url, 400, 300) }}
+              style={styles.photo}
+              contentFit="cover"
+            />
           )}
         />
       ) : (
@@ -320,10 +356,18 @@ function ReviewSection({ placeId }: { placeId: string }) {
             style={styles.input}
           />
           {error ? <Text style={styles.error}>{error}</Text> : null}
-          <Button label={mine ? 'Cập nhật đánh giá' : 'Gửi đánh giá'} onPress={onSubmit} loading={submit.isPending} />
+          <Button
+            label={mine ? 'Cập nhật đánh giá' : 'Gửi đánh giá'}
+            onPress={onSubmit}
+            loading={submit.isPending}
+          />
         </View>
       ) : (
-        <Button label="Đăng nhập để đánh giá" variant="outline" onPress={() => router.push('/login')} />
+        <Button
+          label="Đăng nhập để đánh giá"
+          variant="outline"
+          onPress={() => router.push('/login')}
+        />
       )}
 
       {reviews.length === 0 ? <Text style={styles.muted}>Chưa có đánh giá nào.</Text> : null}
@@ -344,11 +388,28 @@ function ReviewSection({ placeId }: { placeId: string }) {
 const styles = StyleSheet.create({
   flex: { flex: 1, backgroundColor: colors.bg },
   center: { marginTop: 80 },
-  errorBox: { flex: 1, backgroundColor: colors.bg, paddingHorizontal: 20, gap: 14, alignItems: 'center' },
+  errorBox: {
+    flex: 1,
+    backgroundColor: colors.bg,
+    paddingHorizontal: 20,
+    gap: 14,
+    alignItems: 'center',
+  },
   debug: { fontSize: 12, color: colors.danger, textAlign: 'center' },
   scroll: { paddingBottom: 40 },
-  heroEmpty: { height: 280, backgroundColor: colors.primarySoft, alignItems: 'center', justifyContent: 'center' },
-  heroBar: { position: 'absolute', left: 16, right: 16, flexDirection: 'row', justifyContent: 'space-between' },
+  heroEmpty: {
+    height: 280,
+    backgroundColor: colors.primarySoft,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+  heroBar: {
+    position: 'absolute',
+    left: 16,
+    right: 16,
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+  },
   heroRight: { flexDirection: 'row', gap: 10 },
   heroBtn: {
     width: 42,
@@ -397,8 +458,22 @@ const styles = StyleSheet.create({
     borderRadius: radius.pill,
   },
   tagText: { fontSize: 13, fontWeight: '600', color: colors.primary },
-  miniMap: { height: 160, borderRadius: radius.lg, overflow: 'hidden', backgroundColor: colors.surface, marginVertical: 4 },
-  miniAttribution: { position: 'absolute', right: 6, bottom: 4, fontSize: 9, color: colors.muted, backgroundColor: 'rgba(255,255,255,0.85)', paddingHorizontal: 3 },
+  miniMap: {
+    height: 160,
+    borderRadius: radius.lg,
+    overflow: 'hidden',
+    backgroundColor: colors.surface,
+    marginVertical: 4,
+  },
+  miniAttribution: {
+    position: 'absolute',
+    right: 6,
+    bottom: 4,
+    fontSize: 9,
+    color: colors.muted,
+    backgroundColor: 'rgba(255,255,255,0.85)',
+    paddingHorizontal: 3,
+  },
   section: { fontSize: 18, fontWeight: '800', color: colors.text, marginTop: 14 },
   block: { gap: 12 },
   photoList: { gap: 8 },

@@ -38,7 +38,10 @@ export default function VerifyOtpScreen() {
     >
       <Pressable style={styles.boxes} onPress={() => input.current?.focus()}>
         {Array.from({ length: LENGTH }, (_, i) => (
-          <View key={i} style={[styles.box, i === Math.min(code.length, LENGTH - 1) && styles.boxActive]}>
+          <View
+            key={i}
+            style={[styles.box, i === Math.min(code.length, LENGTH - 1) && styles.boxActive]}
+          >
             <Text style={styles.digit}>{code[i] ?? ''}</Text>
           </View>
         ))}

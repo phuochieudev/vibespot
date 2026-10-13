@@ -76,6 +76,13 @@ const styles = StyleSheet.create({
   rowText: { flex: 1, gap: 2 },
   name: { fontSize: 16, fontWeight: '700', color: colors.text },
   address: { fontSize: 13, color: colors.muted },
-  badge: { fontSize: 12, fontWeight: '700', paddingHorizontal: 10, paddingVertical: 5, borderRadius: radius.pill, overflow: 'hidden' },
+  badge: {
+    fontSize: 12,
+    fontWeight: '700',
+    paddingHorizontal: 10,
+    paddingVertical: 5,
+    borderRadius: radius.pill,
+    overflow: 'hidden',
+  },
   empty: { textAlign: 'center', color: colors.muted, marginTop: 40, paddingHorizontal: 24 },
 });

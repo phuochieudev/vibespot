@@ -1,0 +1,15 @@
+**/node_modules
+**/dist
+**/.turbo
+**/.expo
+**/.env
+**/.env.*
+!**/.env.example
+.git
+apps/mobile
+!apps/mobile/package.json
+apps/api/src/generated
+apps/api/prisma/seed/.cache
+**/*.log
+**/.DS_Store
+docs

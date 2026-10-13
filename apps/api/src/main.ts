@@ -9,7 +9,9 @@ const app = await NestFactory.create(AppModule, { bufferLogs: true });
 app.useLogger(app.get(Logger));
 
 const config = app.get<ConfigService<Env, true>>(ConfigService);
-setupApp(app, config.get('CORS_ORIGIN'));
+setupApp(app, config.get('CORS_ORIGIN'), config.get('TRUST_PROXY'));
+// Nhận SIGTERM (khi deploy/restart) để PrismaService ngắt kết nối DB đúng cách.
+app.enableShutdownHooks();
 
 const port = config.get('PORT');
 await app.listen(port);

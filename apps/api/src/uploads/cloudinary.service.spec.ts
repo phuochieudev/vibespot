@@ -3,7 +3,11 @@ import { CloudinaryService, PHOTO_FOLDER, signParams } from './cloudinary.servic
 describe('signParams', () => {
   // Ví dụ trong tài liệu Cloudinary (api_secret "abcd"). Giá trị này là kết quả tính được,
   // dùng để phát hiện thay đổi vô ý; độ đúng với Cloudinary được kiểm chứng bằng upload thật.
-  const params = { eager: 'w_400,h_300,c_pad|w_260,h_200,c_crop', public_id: 'sample_image', timestamp: 1315060510 };
+  const params = {
+    eager: 'w_400,h_300,c_pad|w_260,h_200,c_crop',
+    public_id: 'sample_image',
+    timestamp: 1315060510,
+  };
 
   it('cho kết quả cố định với cùng đầu vào', () => {
     expect(signParams(params, 'abcd')).toBe('bfd09f95f331f558cbd1320e67aa8d488770583e');
@@ -32,11 +36,15 @@ describe('CloudinaryService.owns', () => {
 
   it('từ chối ảnh của tài khoản khác, thư mục khác, hoặc domain khác', () => {
     expect(svc.owns(`https://res.cloudinary.com/other/image/upload/v1/${id}.jpg`, id)).toBe(false);
-    expect(svc.owns('https://res.cloudinary.com/demo/image/upload/v1/evil/abc.jpg', 'evil/abc')).toBe(false);
+    expect(
+      svc.owns('https://res.cloudinary.com/demo/image/upload/v1/evil/abc.jpg', 'evil/abc'),
+    ).toBe(false);
     expect(svc.owns(`https://evil.com/demo/image/upload/v1/${id}.jpg`, id)).toBe(false);
   });
 
   it('từ chối khi publicId không khớp URL', () => {
-    expect(svc.owns(`https://res.cloudinary.com/demo/image/upload/v1/${id}.jpg`, `${PHOTO_FOLDER}/zzz`)).toBe(false);
+    expect(
+      svc.owns(`https://res.cloudinary.com/demo/image/upload/v1/${id}.jpg`, `${PHOTO_FOLDER}/zzz`),
+    ).toBe(false);
   });
 });

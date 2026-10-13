@@ -25,7 +25,12 @@ export default function RootLayout() {
         <Stack.Screen name="place/[id]" />
         <Stack.Screen
           name="admin"
-          options={{ headerShown: true, title: 'Duyệt nội dung', headerBackTitle: 'Quay lại', headerTintColor: colors.primary }}
+          options={{
+            headerShown: true,
+            title: 'Duyệt nội dung',
+            headerBackTitle: 'Quay lại',
+            headerTintColor: colors.primary,
+          }}
         />
         <Stack.Screen name="add-place" options={{ presentation: 'modal' }} />
         <Stack.Screen name="login" options={{ presentation: 'modal' }} />

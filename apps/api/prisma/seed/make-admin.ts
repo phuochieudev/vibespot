@@ -11,7 +11,9 @@ if (!email) {
   process.exit(1);
 }
 
-const prisma = new PrismaClient({ adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }) });
+const prisma = new PrismaClient({
+  adapter: new PrismaPg({ connectionString: process.env.DATABASE_URL }),
+});
 try {
   const { count } = await prisma.user.updateMany({ where: { email }, data: { role: 'ADMIN' } });
   if (count === 0) throw new Error(`Không có người dùng ${email}`);

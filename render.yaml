@@ -1,0 +1,31 @@
+# Render Blueprint: Dashboard -> New -> Blueprint -> chọn repo này. Render đọc file này để tạo dịch vụ.
+services:
+  - type: web
+    name: vibespot-api
+    runtime: docker
+    dockerfilePath: ./apps/api/Dockerfile
+    dockerContext: .
+    plan: free
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      # Render đứng trước API như một proxy: cần để giới hạn tốc độ tính theo IP thật của người dùng.
+      - key: TRUST_PROXY
+        value: '1'
+      - key: CORS_ORIGIN
+        value: '*'
+      # Khoá ký JWT: Render tự sinh chuỗi ngẫu nhiên, không lưu trong repo.
+      - key: JWT_ACCESS_SECRET
+        generateValue: true
+      # Các giá trị bí mật dưới đây tự điền trong Dashboard sau khi tạo dịch vụ (sync: false = không nằm trong repo).
+      - key: DATABASE_URL
+        sync: false
+      - key: DIRECT_URL
+        sync: false
+      - key: CLOUD_NAME
+        sync: false
+      - key: CLOUD_API_KEY
+        sync: false
+      - key: CLOUD_API_SECRET
+        sync: false

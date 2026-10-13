@@ -56,7 +56,11 @@ describe('Reviews (e2e)', () => {
 
   it('quán chờ duyệt thì không xem hay đánh giá được (404)', async () => {
     await http().get(`/api/places/${placeId}/reviews`).expect(404);
-    await http().post(`/api/places/${placeId}/reviews`).set(bearer(0)).send({ rating: 5 }).expect(404);
+    await http()
+      .post(`/api/places/${placeId}/reviews`)
+      .set(bearer(0))
+      .send({ rating: 5 })
+      .expect(404);
   });
 
   describe('sau khi được duyệt', () => {
@@ -76,9 +80,17 @@ describe('Reviews (e2e)', () => {
 
     it('từ chối điểm ngoài 1-5 và id sai định dạng (400)', async () => {
       for (const rating of [0, 6, 3.5, 'năm']) {
-        await http().post(`/api/places/${placeId}/reviews`).set(bearer(0)).send({ rating }).expect(400);
+        await http()
+          .post(`/api/places/${placeId}/reviews`)
+          .set(bearer(0))
+          .send({ rating })
+          .expect(400);
       }
-      await http().post('/api/places/khong-phai-uuid/reviews').set(bearer(0)).send({ rating: 5 }).expect(400);
+      await http()
+        .post('/api/places/khong-phai-uuid/reviews')
+        .set(bearer(0))
+        .send({ rating: 5 })
+        .expect(400);
     });
 
     it('đánh giá đầu tiên cập nhật điểm trung bình của quán', async () => {
@@ -93,7 +105,11 @@ describe('Reviews (e2e)', () => {
     });
 
     it('gửi lại thì cập nhật đánh giá cũ chứ không tạo thêm', async () => {
-      await http().post(`/api/places/${placeId}/reviews`).set(bearer(0)).send({ rating: 3 }).expect(200);
+      await http()
+        .post(`/api/places/${placeId}/reviews`)
+        .set(bearer(0))
+        .send({ rating: 3 })
+        .expect(200);
       const list = await http().get(`/api/places/${placeId}/reviews`).expect(200);
       expect(list.body).toHaveLength(1);
       expect(list.body[0]).toMatchObject({ rating: 3, comment: null });
@@ -101,7 +117,11 @@ describe('Reviews (e2e)', () => {
     });
 
     it('người thứ hai đánh giá: điểm trung bình và số lượng tính lại đúng', async () => {
-      await http().post(`/api/places/${placeId}/reviews`).set(bearer(1)).send({ rating: 4 }).expect(200);
+      await http()
+        .post(`/api/places/${placeId}/reviews`)
+        .set(bearer(1))
+        .send({ rating: 4 })
+        .expect(200);
       expect(await place()).toMatchObject({ avgRating: 3.5, reviewCount: 2 });
       const list = await http().get(`/api/places/${placeId}/reviews`).expect(200);
       expect(list.body).toHaveLength(2);

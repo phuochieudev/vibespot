@@ -18,7 +18,8 @@ export function describeAttributes(attrs: Record<string, unknown>): string[] {
   if (attrs.airConditioned === true) out.push('Máy lạnh');
   if (attrs.openLate === true) out.push('Mở khuya');
   if (attrs.freeParking === true) out.push('Giữ xe miễn phí');
-  if (typeof attrs.outlets === 'string' && OUTLETS[attrs.outlets]) out.push(OUTLETS[attrs.outlets]!);
+  if (typeof attrs.outlets === 'string' && OUTLETS[attrs.outlets])
+    out.push(OUTLETS[attrs.outlets]!);
   if (typeof attrs.noise === 'string' && NOISE[attrs.noise]) out.push(NOISE[attrs.noise]!);
   if (typeof attrs.avgPriceVnd === 'number') {
     out.push(`~${attrs.avgPriceVnd.toLocaleString('vi-VN')}đ/ly`);
